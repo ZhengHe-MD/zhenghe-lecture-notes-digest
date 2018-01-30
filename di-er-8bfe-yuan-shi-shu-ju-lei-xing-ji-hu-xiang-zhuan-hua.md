@@ -191,7 +191,7 @@ float f = i;
 
 ### 参考资料
 
-* [Stanford CS107: lecture 4](https://www.youtube.com/watch?v=jTSvthW34GU&index=2&list=PL9D558D49CA734A02)
+* [Stanford CS107: lecture 2](https://www.youtube.com/watch?v=jTSvthW34GU&list=PL08D9FA018A965057)
 * [Github: ZhengHe-MD - lecture codes](https://github.com/ZhengHe-MD/cs107-lecture-codes)
 
 
