@@ -1,3 +1,4 @@
-# My Awesome Book
+# 关于这本 GitBook
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+在这里我会记录我本人在 Computer Science、Software Engineering 朝圣路上到过的一些村庄、县城、都市，以及所想所感
+
