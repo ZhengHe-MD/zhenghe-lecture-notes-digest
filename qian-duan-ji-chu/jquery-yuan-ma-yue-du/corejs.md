@@ -11,12 +11,12 @@
 
 ```js
 define([], function() {
-  
+
   jQuery = function ( selector, context ) {};                // <1>
   jQuery.fn = jQuery.prototype = {};                         // <2>
   jQuery.extend = jQuery.fn.extend = function() {};
   jQuery.extend({});
-  
+
   return jQuery;
 });
 ```
@@ -41,4 +41,38 @@ $('button[type="submit"]').on("click", function(e) { //... })
 ```
 
 我每次用它，我都很好奇 **$\('string'\) **究竟是什么样的操作，现在看了 **&lt;1&gt;、&lt;2&gt;** 两行代码茅塞顿开。**$\('string'\) **实际上利用 **jQuery** 函数构造了一个新的对象，这个对象在原型链的下一级就是 **jQuery.prototype** ，因此这个对象也拥有 jQuery.prototype 中定义的所有能力，我们常用的 text、data、 prop、on、off 等这些烂熟于心的 api 也必定来源于这个对象。
+
+我们先看一下函数 **jQuery**
+
+```js
+jQuery = function ( selector, context ) {
+    return new jQuery.fn.init( selector, context );
+}
+```
+
+扎实的英文基础告诉我，**jQuery.fn.init** 函数会初始化一个 jQuery 对象，初始化时接受两个参数，第一个参数指定选择器，来选取你想要操作的 DOM 元素；第二个参数指定选择范围，而这个范围本身也是一个选择器。init 执行完成后，我们会得到一个类数组 \(array-like\) 对象，这个类数组对象里面的每个元素正是符合指定选择范围内符合选择器要求的 DOM 元素。
+
+##### 题外话
+
+**什么是类数组? 为什么我们常说 jQuery 或者 querySelectorAll 返回的结果不是数组，而是类数组呢？这个问题实际上可以拆成两个子问题来理解：**
+
+1. 我们会误认为 jQuery 或 querySelectorAll 返回的东西是数组，原因在于它可以通过 index 来取值。例如
+   ```js
+   const pEle = document.querySelectorAll("p")[0]
+   const divEle = $('div')[0]
+   ```
+
+   **子问题1：**为什么我们可以通过 index 来取值？
+
+2. 我们说 jQuery 或 querySelectorAll 返回的东西不是真实的数组，原因在于无法对它直接使用 Array.prototype 上的所有方法，例如
+   ```js
+   const ps = document.querySelectorAll("p").map(ele => ele)
+   // Uncaught TypeError: document.querySelectorAll(...).map is not a function
+   const divs = document.querySelectorAll("div").slice(3)
+   // Uncaught TypeError: document.querySelectorAll(...).slice is not a function
+   ```
+
+   **子问题2:** 为什么我们无法对返回值使用 Array.prototype 上的方法
+
+
 
