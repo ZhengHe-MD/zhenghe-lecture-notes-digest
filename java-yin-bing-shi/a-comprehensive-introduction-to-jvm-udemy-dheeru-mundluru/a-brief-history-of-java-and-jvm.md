@@ -26,15 +26,9 @@
 1. 由于Bytecode 十分精简，解释 Bytecode 速度很快，同时也减小了网络传输代码的开销。
 2. 运行阶段有 Just-in-time \(JIT\) compilation 进一步加快运行速度。
 
+然而，由于 Green Project 的产品太过于先进，当时并没有真正投入使用，但这时候互联网开始兴起，整个互联网场景与 Green Project 的设计场景几无二致。Java 和 JVM 的出现，使得人们得意看到动态网页， Java 与 JVM 也因此流行开来。
 
-
-
-
-
-
-
-
-
+尽管后来在浏览器端，Java Applets 被 JavaScript 逐渐取代，但万维网和浏览器的出现让 Java 与 JVM 得以存活并流传开来。
 
 
 
