@@ -60,7 +60,7 @@ printf("%c \n", ch); // 输出结果视 endianness 而定
 
 #### 数组与指针算术（pointer arithmetic）
 
-```
+```c
 int array[10];
 // array 等价于第一个元素的地址
 array === &array[0]
@@ -72,8 +72,8 @@ array + k === &array[k]
 
 int array[5]; array[3] = 128;
 ((short *)array)[6] = 2;
-// array 			=> 数组起始地址，类型为 int *
-// (short *)array 	=> 指鹿为马 -- 假装它是个 short *，即 array 中的元素为 short 类型
+// array             => 数组起始地址，类型为 int *
+// (short *)array     => 指鹿为马 -- 假装它是个 short *，即 array 中的元素为 short 类型
 // (short *)array[6]=> 将 short array 的第六个元素改成 2
 
 // Big Endian:
@@ -86,6 +86,35 @@ int array[5]; array[3] = 128;
 // (short *)array[6]=2 => [][][][00000000 00000000 00000000 00000010][]
 // 输出 2
 ```
+
+#### 结构体
+
+```c
+struct student {
+    char *name;
+    char suid[8];
+    int numUnits;
+};
+
+int main(int argc, char **argv) {
+    struct student pupils[4];           // 初始化了长度为 4 的 student 结构体数组
+    pupils[0].numUnits = 21;            // 赋予第一个 student 的 numUnits 字段
+    pupils[2].name = strdup("Adam");    // 将第三个 student 的 name 指向 heap 中初始化的一个字符串 "Adam\0"
+    pupils[3].name = pupils[0].suid + 6;// 将第四个 student 的 name 指向第一个 student 的 suid 往后移 6 位之处
+    strcpy(pupils[1].suid, "40415xx");  // 将字符串 "40415xx" 放入第一个 student 的 suid 中
+    strcpy(pupils[3].name, "123456");   // 将字符串 "123456" 放入第四个 student 的 name, 即第一个 student 的 suid 往后移 6 位之处
+}
+```
+
+如下图所示：
+
+![](/assets/Stanford-CS107-3-pupils.jpg)
+
+### 参考资料
+
+* [Stanford CS107: lecure 3](https://www.youtube.com/watch?v=H4MQXBF6FN4&list=PL9D558D49CA734A02&index=3)
+
+* [Github: ZhengHe-MD - lecture codes](https://github.com/ZhengHe-MD/cs107-lecture-codes)
 
 
 
