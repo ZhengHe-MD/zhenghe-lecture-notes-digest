@@ -57,14 +57,35 @@ jQuery = function ( selector, context ) {
 **什么是类数组? 为什么我们常说 jQuery 或者 querySelectorAll 返回的结果不是数组，而是类数组呢？这个问题实际上可以拆成两个子问题来理解：**
 
 1. 我们会误认为 jQuery 或 querySelectorAll 返回的东西是数组，原因在于它可以通过 index 来取值。例如
+
    ```js
    const pEle = document.querySelectorAll("p")[0]
    const divEle = $('div')[0]
    ```
 
-   **子问题1：**为什么我们可以通过 index 来取值？
+   子问题1：为什么我们可以通过 index 来取值？
+
+   原因在于 JavaScript 的数组实际上也是对象，只是这个对象的键 \(key\) 中包含了序列自然数序列，而我们用 index 去取值时，就恰好取得键为 index 对应的值。此外，length 也只是数组对象的一个属性，只是它和数组中元素的个数相同而已。举例如下：
+
+   ```js
+   const arr = {
+     0: 'a',
+     1: 'b',
+     2: 'c',
+     3: 'd',
+     length: 4
+   }
+
+   console.log(arr[0]) 
+   // 'a'
+   console.log(arr[1])
+   // 'b'
+   console.log(arr.length)
+   // 4
+   ```
 
 2. 我们说 jQuery 或 querySelectorAll 返回的东西不是真实的数组，原因在于无法对它直接使用 Array.prototype 上的所有方法，例如
+
    ```js
    const ps = document.querySelectorAll("p").map(ele => ele)
    // Uncaught TypeError: document.querySelectorAll(...).map is not a function
@@ -72,7 +93,11 @@ jQuery = function ( selector, context ) {
    // Uncaught TypeError: document.querySelectorAll(...).slice is not a function
    ```
 
-   **子问题2:** 为什么我们无法对返回值使用 Array.prototype 上的方法
+   **子问题2:** 为什么我们无法对返回值使用 Array.prototype 上的方法  
+   原因很简单，因为它的原型链上根本就没有 Array.prototype。例子中 **ps** 实际上是 NodeList，它的原型链如下所示：  
+   _NodeList --&gt; NodeList.prototype --&gt; Object.prototype --&gt; null  
+   _同理，**divs** 实际上是 jQuery 对象，它的原型链如下所示：  
+   jQuery Object --&gt; jQuery.prototype --&gt; Object.prototype --&gt; null
 
 
 
