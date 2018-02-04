@@ -1,4 +1,4 @@
-# 第四课 - 泛型函数
+# 第四、五课 - 泛型函数
 
 ### 从 “指鹿为马” 到泛型函数 \(Generic Function\)
 
@@ -23,11 +23,11 @@ int main(int argc, char **argv) {
   int a = 1;
   int b = 2;
   swap(&a, &b, sizeof(int));
-  
+
   double f1 = 0.5;
   double f2 = 0.8;
   swap(&f1, &f2, sizeof(double));
-  
+
   char *husband = strdup("Fred");
   char *wife = strdup("Wilma");
   swap(&husband, &wife, sizeof(char *)); // 注意这里，交换的是两个指针
