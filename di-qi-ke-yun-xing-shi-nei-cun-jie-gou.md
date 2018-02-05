@@ -24,7 +24,7 @@ int *arr = malloc(40 * sizeof(int));
 
 小明是个刚学习 C 并对内存资源十分敏感的程序员，他写出了如下代码：
 
-```
+```c
 int *arr = malloc(100*sizeof(int));
 // do anything he want with the arr
 free(arr + 60);
@@ -34,7 +34,7 @@ free(arr + 60);
 
 小明有时候也会写出这样的代码:
 
-```
+```c
 int array[100];
 // do anything he want with the array
 free(array);
@@ -78,12 +78,12 @@ Heap Manager 不仅会利用已分配内存节点的头部存储信息，还会�
 
 #### 走近 Stack
 
-```
+```c
 void A() {
   int a;
   short b[4];
   double c;
-  
+
   B();
   C();
 }
@@ -92,7 +92,7 @@ void B() {
   int x;
   char *y;
   char *z[2];
-  
+
   C();
 }
 
@@ -115,8 +115,6 @@ void C() {
 
 一图胜千言，为什么这个内存结构被称为 Stack 也就一目了然了。
 
-
-
 ### 进入 Code Segment 之前 --- 逻辑计算单元\(ALU\)、寄存器 \(Registers\) 和内存 \(Memory\)
 
 ![](/assets/cs107-8-alu-registers-memory.jpg)如下图所示，在内存与逻辑计算单元之间，有一小块特殊的内存，叫做寄存器。通常，它与逻辑计算单元以及内存直接相连，在物理上就保证了存取的速度。且由于寄存器单元的数量远远小于内存单元的数量，因此寄存器寻址速度也要远远快于内存寻址，同时简化逻辑计算单元内部所需支持的功能。
@@ -128,8 +126,6 @@ void C() {
 2. 利用逻辑计算单元对寄存器中的数据进行计算，如加、减、乘、位移等等，将结果存回寄存器
 
 3. 将最终结果放回内存中
-
-
 
 #### 参考
 
