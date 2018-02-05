@@ -210,3 +210,11 @@ Q: n \* n &gt; 4
 
 可以看出，将问题分解成形式一样，规模更小的问题，重复直到基本情况的思路恰好就是归纳法的逆过程，因此用归纳法证明递归算法的正确性，是天生一对。或者说，你在写递归算法时，脑海里已经用归纳法证明了算法的正确性。
 
+#### 参考
+
+* [Youtube: MIT6.001-SICP-2004-lecture-3](https://www.youtube.com/watch?v=Yj1fm4PVQPM&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=3)
+
+* [[MIT6.006-SICP-2005-lecture-notes-](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture2webhand.pdf)3](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture3webhand.pdf)
+
+
+
