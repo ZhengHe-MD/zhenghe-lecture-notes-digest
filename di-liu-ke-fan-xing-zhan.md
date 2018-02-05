@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
     free(name);
   }
   StackDispose(&stringStack);
-  
+
   // 2. 
   // StackDispose(&stringStack);
 }
@@ -159,7 +159,7 @@ void StackDispose(stack *s) {
 
 这时候，使用 stringStack 就需要传入释放函数：
 
-```
+```c
 void StringFree(void *elem) {
   free(*(char **) elem);
 }
