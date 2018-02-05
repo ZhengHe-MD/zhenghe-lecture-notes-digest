@@ -13,7 +13,7 @@
 * [麻省理工 - SICP](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
   * [第二课 - 程序抽象](computer-science-ji-chu-ke-cheng/di-er-ke-cheng-xu-chou-xiang.md)
-  * 第三课 - 替代模型
+  * [第三课 - 替代模型](computer-science-ji-chu-ke-cheng/di-san-ke-ti-dai-mo-xing.md)
 
 ## 前端杂货铺
 
