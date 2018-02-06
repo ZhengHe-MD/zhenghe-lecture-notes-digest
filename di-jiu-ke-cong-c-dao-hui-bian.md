@@ -59,7 +59,7 @@ int i;
 short s1;
 short s2;
 
-i = 200;  	
+i = 200;      
 s1 = i;
 s2 = s1 + 1;
 
@@ -136,6 +136,18 @@ pi.dnum = 7;
 // M[R1+4] = 7;
 // M[R1+8] = 451;
 ```
+
+本例内存栈结构如下图所示:
+
+![](/assets/cs107-9-example-4.jpg)
+
+我们发现复杂的指针强制转换语句最后竟然只被编译成一个简单的汇编指令！原因在于，指针、指针类型等都是 C 语言在编程上添加的抽象，只要通过了编译器的检查，最终这些抽象都会消失，编程赤裸裸的字节数据操作。
+
+#### 参考
+
+* [Stanford CS107: lecture 9](https://www.youtube.com/watch?v=arjo2-JQeaY&list=PL9D558D49CA734A02&index=9&t=155s)
+
+* [Github: ZhengHe-MD - lecture codes](https://github.com/ZhengHe-MD/cs107-lecture-codes)
 
 
 
