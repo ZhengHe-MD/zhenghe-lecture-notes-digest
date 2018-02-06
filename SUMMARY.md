@@ -10,6 +10,7 @@
   * [第四、五课 - 泛型函数](di-si-ke-fan-xing-han-shu.md)
   * [第六课 - 泛型栈](di-liu-ke-fan-xing-zhan.md)
   * [第七、八课 - 运行时内存结构](di-qi-ke-yun-xing-shi-nei-cun-jie-gou.md)
+  * [第九课 - 从 C 到汇编](di-jiu-ke-cong-c-dao-hui-bian.md)
   * [第十课 - 函数的活动记录](di-shi-ke-han-shu-diao-yong.md)
 * [麻省理工 - SICP](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
