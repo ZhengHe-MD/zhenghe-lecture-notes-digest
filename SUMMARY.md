@@ -31,3 +31,9 @@
     * [第一节：Java 和 JVM 的简史](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-yi-jie-ff1a-java-he-jvm-de-jian-shi.md)
     * [第二节：JVM 总览](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-jie-ff1a-jvm-zong-lan.md)
 
+## 数据库那点事
+
+* NoSQL
+  * MongoDB In Action digests
+    * [Schema Design Example](shu-ju-ku-na-dian-shi/schema-design-example.md)
+
