@@ -20,6 +20,7 @@
   * [第五课 - 数据抽象](computer-science-ji-chu-ke-cheng/di-wu-ke-shu-ju-chou-xiang.md)
   * [第六课 - 高阶函数](computer-science-ji-chu-ke-cheng/di-liu-ke-gao-jie-han-shu.md)
   * [第九课 - Symbol](computer-science-ji-chu-ke-cheng/di-jiu-ke-symbol.md)
+  * [第十课 - 数据驱动编程与防御式编程](computer-science-ji-chu-ke-cheng/di-shi-ke-shu-ju-qu-dong-bian-cheng-yu-fang-yu-shi-bian-cheng.md)
 
 ## 前端杂货铺
 
