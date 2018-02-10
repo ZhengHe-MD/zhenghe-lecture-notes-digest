@@ -18,6 +18,7 @@
   * [第三课 - 替代模型](computer-science-ji-chu-ke-cheng/di-san-ke-ti-dai-mo-xing.md)
   * [第四课 - 时间复杂度与空间复杂度](computer-science-ji-chu-ke-cheng/di-si-ke-shi-jian-fu-za-du-yu-kong-jian-fu-za-du.md)
   * [第五课 - 数据抽象](computer-science-ji-chu-ke-cheng/di-wu-ke-shu-ju-chou-xiang.md)
+  * [第六课 - 高阶函数](computer-science-ji-chu-ke-cheng/di-liu-ke-gao-jie-han-shu.md)
 
 ## 前端杂货铺
 
