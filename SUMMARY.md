@@ -16,6 +16,7 @@
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
   * [第二课 - 程序抽象](computer-science-ji-chu-ke-cheng/di-er-ke-cheng-xu-chou-xiang.md)
   * [第三课 - 替代模型](computer-science-ji-chu-ke-cheng/di-san-ke-ti-dai-mo-xing.md)
+  * [第四课 - 时间复杂度与空间复杂度](computer-science-ji-chu-ke-cheng/di-si-ke-shi-jian-fu-za-du-yu-kong-jian-fu-za-du.md)
 
 ## 前端杂货铺
 
