@@ -22,6 +22,7 @@
   * [第九课 - Symbol](computer-science-ji-chu-ke-cheng/di-jiu-ke-symbol.md)
   * [第十课 - 数据驱动编程与防御式编程](computer-science-ji-chu-ke-cheng/di-shi-ke-shu-ju-qu-dong-bian-cheng-yu-fang-yu-shi-bian-cheng.md)
   * [第十一课 - 数据抽象中的效率与可读性](computer-science-ji-chu-ke-cheng/di-shi-yi-ke-shu-ju-chou-xiang-zhong-de-xiao-lv-yu-ke-du-xing.md)
+  * [第十二课 - 数据变动](computer-science-ji-chu-ke-cheng/di-shi-er-ke-shu-ju-bian-dong.md)
 
 ## 前端杂货铺
 
