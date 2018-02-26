@@ -18,7 +18,7 @@
 
 我们将看到
 
-> 引入数据变动使得许多事情变得容易，但会提高犯错的可能性。
+> 引入数据修改使得许多事情变得容易，但会提高犯错的可能性。
 
 ### Pair/List Mutation
 
@@ -144,7 +144,7 @@ Stack 数据抽象的几个组成部分如下所示：
     (car stack)))
 ```
 
-利用 list 直接实现，符合上文中的数据抽象的各个部分。但是我们每次 insert、delete 之后都会生成新的 stack，而并非原来的那个 stack。因此用 eq? 来判断两个 insert 或者 delete 操作前后的 stack 会得到 false。但我们在使用 stack 的过程中，更希望 stack 自始至终是同一个 stack，既符合直觉也能使得操作更加方便。这一切将在引入 mutators 之后得以解决……
+利用 list 直接实现，符合上文中的数据抽象的各个部分。但是我们每次 insert、delete 之后都会生成新的 stack，而并非原来的那个 stack。因此用 eq? 来判断两个 insert 或者 delete 操作前后的 stack 会得到 false。但我们在使用 stack 的过程中，更希望 stack 自始至终是同一个 stack，既符合直觉也能使得操作更加方便。这一切将在引入 mutation 之后得以解决……
 
 #### 实现2：利用 mutators
 
