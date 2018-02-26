@@ -58,7 +58,7 @@ mutation 给我们编程带来方便的同时引入问题，需要我们格外�
 
 由于 a 和 b 指向同一块内存，修改 a 的同时，也会修改 b，如下图所示：
 
-（图一）
+![](/assets/Screen Shot 2018-02-26 at 11.28.23 PM.jpg)
 
 因此我们需要在充分了解 mutation 的基础上加以使用。
 
@@ -66,7 +66,7 @@ mutation 给我们编程带来方便的同时引入问题，需要我们格外�
 
 如下图所示修改 x 对应的 list：
 
-（图二）
+![](/assets/Screen Shot 2018-02-26 at 11.28.57 PM.jpg)
 
 可以这样实现：
 
@@ -172,7 +172,7 @@ Stack 数据抽象的几个组成部分如下所示：
     (else
         (set-cdr! stack (cons elt (cdr stack)))
         stack)))
-        
+
 (define (delete! stack)
     (if (empty-stack? stack)
         (error "stack underflow - delete")
@@ -211,7 +211,6 @@ queue 数据抽象的几个组成部分如下：
 ; 1. if j > i:          then it is an error
 ; 2. if j = i:          then (empty-queue? q) is true, and (front-queue q) and (delete-queue q) are errors
 ; 3. if j < i:          then (front-queue q) = x_(j+1)
-
 ```
 
 #### 实现1：没有 mutation
@@ -245,7 +244,9 @@ queue 数据抽象的几个组成部分如下：
 
 #### 实现2：mutation
 
-为了减少 insert-queue 的复杂度，我们在引入 tag 的同时，在 queue 中加上队首 \(front \)和队尾 \(rear\) 指针
+为了减少 insert-queue 的复杂度，我们在引入 tag 的同时，在 queue 中加上队首 \(front \)和队尾 \(rear\) 指针:
+
+![](/assets/Screen Shot 2018-02-26 at 11.31.42 PM.jpg)
 
 ```scheme
 ; helpers, hidden inside abstraction
@@ -295,6 +296,14 @@ queue 数据抽象的几个组成部分如下：
                (set-rear-ptr! q new-pair)
                q))))
 ```
+
+这时候，在获得 identity 的同时，insert-queue 的复杂度降到了 O\(1\)
+
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-12](https://www.youtube.com/watch?v=7WlM_bnBEUc)
+
+* [MIT6.006-SICP-2005-lecture-notes-12](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture12webhan.pdf)
 
 
 
