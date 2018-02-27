@@ -32,7 +32,7 @@ saved pc 中保存着 foo 执行完成后返回的地址。前三行初始化 fo
 
 * 调用 swap
 
-swap 函数执行时，运行时中的函数栈如下图所示：![](/assets/Screen Shot 2018-02-27 at 1.40.10 PM.jpg)
+swap 函数执行时，运行时中的函数栈如下图所示：![](/assets/Screen Shot 2018-02-27 at 10.14.53 PM.jpg)
 
 在调用 swap 函数之前，初始化 swap 函数的参数 ap 和 bp，然后才开始调用 swap，中间省略 swap 函数执行的过程，在最后一行回收局部变量，sp 重新指向 saved pc 然后回到调用地址。
 
@@ -101,8 +101,6 @@ class instance 在调用 instance method 的时候，会自动将实例的指针
 ![](/assets/Screen Shot 2018-02-27 at 9.54.52 PM.jpg)
 
 > c code 和 c++ code 只是在 assembly code 上加的一层语法。一旦 c 和 c++ 编译成 assembly，所有高级语言的概念如 class、reference、pointer、template 都将消失。
-
-
 
 ### 参考资料
 
