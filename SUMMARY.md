@@ -24,6 +24,7 @@
   * [第十课 - 数据驱动编程与防御式编程](computer-science-ji-chu-ke-cheng/di-shi-ke-shu-ju-qu-dong-bian-cheng-yu-fang-yu-shi-bian-cheng.md)
   * [第十一课 - 数据抽象中的效率与可读性](computer-science-ji-chu-ke-cheng/di-shi-yi-ke-shu-ju-chou-xiang-zhong-de-xiao-lv-yu-ke-du-xing.md)
   * [第十二课 - 数据修改](computer-science-ji-chu-ke-cheng/di-shi-er-ke-shu-ju-bian-dong.md)
+  * [第十三课 - 环境模型](computer-science-ji-chu-ke-cheng/di-shi-san-ke-huan-jing-mo-xing.md)
 
 ## 前端杂货铺
 
