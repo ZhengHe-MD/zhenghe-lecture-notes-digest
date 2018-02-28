@@ -84,5 +84,9 @@ set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变�
 
 假设我们在 E1 中执行 \(set! z 20\)，我们从 Frame A 开始寻找，Frame A 中不含有 z 与值的 binding，因此继续寻找，直到发现 Frame B 中含有 z 与 10 的 binding，于是该语句将把 z 与 10 的 binding 修改为 z 与 20 的 binding。此时 set! 与 define 的结果就不一样。
 
+#### lambda-rule
+
+
+
 
 
