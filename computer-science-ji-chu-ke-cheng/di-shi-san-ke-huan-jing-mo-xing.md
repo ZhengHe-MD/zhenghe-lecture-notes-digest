@@ -36,15 +36,13 @@
 
 我们将变量及其内部的数据合称为 binding，这些 bindings 可以组成一张表，这张表被称为 Frame。如下图所示：
 
-（图一）
+![](/assets/Screen Shot 2018-03-01 at 10.45.06 PM.jpg)
 
 从图中可以看到，在 Frame A 中，变量 x 与 15 组成一个 binding，变量 y 与 \(1 2\) 组成一个 binding。
 
 #### Environment: a sequence of frames
 
-环境由一系列 Frame 构成，这些 Frame 之间存在着内外包含关系 \(enclosing\)。如下图所示：
-
-（图二）
+环境由一系列 Frame 构成，这些 Frame 之间存在着内外包含关系 \(enclosing\)。如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.45.39 PM.jpg)
 
 图中，环境 E1 同时包含 Frame A 和 Frame B，环境 E2 只包含 Frame B。Frame A 指向 Frame B 的箭头表示 B 是 A 的外环境，这个箭头称为外环境指针 \(enclosing environment pointer\)。既然 A 有外环境，那么 B 也可以有外环境，但这种链式关系不可能无休止地传递下去，总有一个 Frame 没有外环境指针，它是所有其它环境的最后的外环境，这个环境（或者 Frame）被称为全局环境 \(Global Environment\)。
 
@@ -62,23 +60,17 @@
 
 #### define-rule
 
-define 规则会在当前环境的第一个 Frame 中创建，或者覆盖已有的 binding。如下图所示：
-
-（图三）
+define 规则会在当前环境的第一个 Frame 中创建，或者覆盖已有的 binding。如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.46.12 PM.jpg)
 
 假设我们在 GE 中执行 \(define z 20\)，这时候，由于 GE 中已经含有 z 变量与 10 的 binding，因此该语句将用 z 变量与 20 的新 binding 覆盖原 binding。
 
 假设我们在 E1 中执行 \(define z 25\)，这时候，由于 Frame A 是 E1 中的第一个 Frame，且由于 E1 中并不含有 z 变量与其它值的 binding，因此该语句将在 Frame A 中创建 z 和 25 的binding。
 
-修改结果如下图所示：
-
-（图四）
+修改结果如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.46.52 PM.jpg)
 
 #### set!-rule
 
-set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变量 binding 的 Frame，然后将那个 binding 中的数据修改为参数指定的值。如下图所示：
-
-（图五）
+set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变量 binding 的 Frame，然后将那个 binding 中的数据修改为参数指定的值。如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.47.22 PM.jpg)
 
 假设我们在 GE 中执行 \(set! z 20\)，我们从 Frame B 开始寻找，恰好 Frame B 含有 z 与 10 的 binding，因此该语句将把 z 与 10 的 binding 修改为 z 与 20 的 binding。此时 set! 与 define 的结果一致。
 
@@ -86,11 +78,9 @@ set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变�
 
 #### lambda-rule
 
-在替代模型中，我们规定 lambda 表达式的返回值是一个复合程序 \(compound procedure\)，但我们没有讨论这个复合程序的内容。实际上，它由两个指针构成，第一个指针指向程序的参数和程序体，另一个指针指向这个 lambda 表达式所在的环境。如下图所示：
+在替代模型中，我们规定 lambda 表达式的返回值是一个复合程序 \(compound procedure\)，但我们没有讨论这个复合程序的内容。实际上，它由两个指针构成，第一个指针指向程序的参数和程序体，另一个指针指向这个 lambda 表达式所在的环境。如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.48.13 PM.jpg)
 
-（图六）
-
-假如我们在 E1 中执行 \(define square \(lambda \(x\) \(\* x x\)\)\) \| E1，lambda 表达式将返回复合程序，它与 y 在 Frame A 中形成一个 binding。而这个复合程序有两个指针，它的第一个指针指向它的参数和程序体，第二个指针指向它被创建的环境 E1。
+假如我们在 E1 中执行 \(define square \(lambda \(x\) \(\* x x\)\)\) \| E1，lambda 表达式将返回复合程序，它与 y 在 Frame A 中形成一个 binding。而这个复合程序有两个指针，它的第一个指针指向它的参数和程序体，第二个指针指向它被创建的环境 E1。![](/assets/Screen Shot 2018-03-01 at 10.48.51 PM.jpg)
 
 #### application
 
@@ -108,13 +98,11 @@ set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变�
 (square 4)
 ```
 
-假设我们在 GE 中 define 了 square，那么执行 \(square 4\) 的过程如下图所示：
-
-（图七）
+假设我们在 GE 中 define 了 square，那么执行 \(square 4\) 的过程如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.51.06 PM.jpg)
 
 首先创建新的 Frame， A；因为 square 的外环境指针指向 GE，因此 A 的外环境指针也指向 GE，由图中蓝线所示；接着在 A 中添加 x 与 4 的 binding；最后在 E1 中执行程序体 \(\* x x\)，程序体中的 \* 在 GE 中有 binding 值，而 x 在 A 中有绑定值 4，最终 \(square 4\) 语句的执行结果为 16。
 
-##### 例2： 
+##### 例2：
 
 ```scheme
 (define (square x) (* x x))
@@ -123,25 +111,23 @@ set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变�
 (inc-square 4)
 ```
 
-假设我们在 GE 中 define 了 square 和 inc-square，那么执行 \(inc-square 4\) 的过程如下图所示：
-
-（图八）
+假设我们在 GE 中 define 了 square 和 inc-square，那么执行 \(inc-square 4\) 的过程如下图所示：![](/assets/Screen Shot 2018-03-01 at 10.51.27 PM.jpg)
 
 首先创建新的 Frame，由于 inc-square 的外环境指针指向 GE，因此新 Frame 的外环境指针也指向 GE，新 Frame 与 GE 构成新环境 E1；接着在新 Frame 中添加 y 与 4 的 binding；最后在 E1 中执行程序体 \(+ 1 \(square y\)\)，程序体中的 + 和 square 在 GE 中有 binding 值，而 y 在新 Frame 中有绑定值。但 square 对应的是一个复合程序，因此将重复例1中的过程，直到返回 16 位置，然后在 E1 中执行 \(+ 1 16\) 得到最终值 17。值得注意的是，E2 的外环境指针指向的是 GE 而非 E1，原因在于定义 square 的时候，square 复合程序的外环境指针指向的是 GE。
 
-##### 例3：make-counter 
+##### 例3：make-counter
 
-现在我们已经拥有足够强大的模型来解释本节开头的例子 --- make-counter。这里只上图，留作意淫：
-
-（图九）
+现在我们已经拥有足够强大的模型来解释本节开头的例子 --- make-counter。这里只上图，留作意淫：![](/assets/Screen Shot 2018-03-01 at 10.51.57 PM.jpg)
 
 ### 小结
 
 个人觉得，环境模型已经与我们现实中各门高级程序语言的模型非常接近，对于了解各门语言的执行模型来说，环境模式是一个不错的起点。
 
-### 参考
+#### 参考
 
+* [Youtube: SICP-2004-Lecture-13](https://www.youtube.com/watch?v=SDsxFreEYsc&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=13&t=0s)
 
+* [MIT6.006-SICP-2005-lecture-notes-13](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture15webha2.pdf)
 
 
 
