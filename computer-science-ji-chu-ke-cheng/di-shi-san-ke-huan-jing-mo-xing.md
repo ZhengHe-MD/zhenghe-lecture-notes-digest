@@ -86,6 +86,61 @@ set! 规则在执行时，首先顺着 Frame 链寻找第一个含有目标变�
 
 #### lambda-rule
 
+在替代模型中，我们规定 lambda 表达式的返回值是一个复合程序 \(compound procedure\)，但我们没有讨论这个复合程序的内容。实际上，它由两个指针构成，第一个指针指向程序的参数和程序体，另一个指针指向这个 lambda 表达式所在的环境。如下图所示：
+
+（图六）
+
+假如我们在 E1 中执行 \(define square \(lambda \(x\) \(\* x x\)\)\) \| E1，lambda 表达式将返回复合程序，它与 y 在 Frame A 中形成一个 binding。而这个复合程序有两个指针，它的第一个指针指向它的参数和程序体，第二个指针指向它被创建的环境 E1。
+
+#### application
+
+在环境模型中，执行符合程序 P 可以分为四个步骤：
+
+1. 创建一个新的 Frame，设为 A
+2. 将 A 的外环境指针指向 P 的外环境指针所指的环境，此时 A 及其外环境一起构成新的环境，设为 E
+3. 在 A 中，将 P 的参数与它的值绑定起来
+4. 在 E 中执行 P 的程序体
+
+##### 例1：
+
+```scheme
+(define (square x) (* x x))
+(square 4)
+```
+
+假设我们在 GE 中 define 了 square，那么执行 \(square 4\) 的过程如下图所示：
+
+（图七）
+
+首先创建新的 Frame， A；因为 square 的外环境指针指向 GE，因此 A 的外环境指针也指向 GE，由图中蓝线所示；接着在 A 中添加 x 与 4 的 binding；最后在 E1 中执行程序体 \(\* x x\)，程序体中的 \* 在 GE 中有 binding 值，而 x 在 A 中有绑定值 4，最终 \(square 4\) 语句的执行结果为 16。
+
+##### 例2： 
+
+```scheme
+(define (square x) (* x x))
+(define (inc-square y) (+ 1 (square y))
+
+(inc-square 4)
+```
+
+假设我们在 GE 中 define 了 square 和 inc-square，那么执行 \(inc-square 4\) 的过程如下图所示：
+
+（图八）
+
+首先创建新的 Frame，由于 inc-square 的外环境指针指向 GE，因此新 Frame 的外环境指针也指向 GE，新 Frame 与 GE 构成新环境 E1；接着在新 Frame 中添加 y 与 4 的 binding；最后在 E1 中执行程序体 \(+ 1 \(square y\)\)，程序体中的 + 和 square 在 GE 中有 binding 值，而 y 在新 Frame 中有绑定值。但 square 对应的是一个复合程序，因此将重复例1中的过程，直到返回 16 位置，然后在 E1 中执行 \(+ 1 16\) 得到最终值 17。值得注意的是，E2 的外环境指针指向的是 GE 而非 E1，原因在于定义 square 的时候，square 复合程序的外环境指针指向的是 GE。
+
+##### 例3：make-counter 
+
+现在我们已经拥有足够强大的模型来解释本节开头的例子 --- make-counter。这里只上图，留作意淫：
+
+（图九）
+
+### 小结
+
+个人觉得，环境模型已经与我们现实中各门高级程序语言的模型非常接近，对于了解各门语言的执行模型来说，环境模式是一个不错的起点。
+
+### 参考
+
 
 
 
