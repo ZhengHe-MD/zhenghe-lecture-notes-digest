@@ -112,8 +112,6 @@ void *VectorNth(vector *v, int position) {
 
 当 NDEBUG 为 true 时，assert 被替换为 \(\(void\)0\)，即 no-op，编译时会在优化的过程中去除。
 
-
-
 **需要注意的是：在使用宏时，要注意它只做文本替换，程序员需要警惕替换的结果可能造成的问题。**
 
 ##### 例6：使用宏可能出现效率问题
@@ -170,7 +168,7 @@ int main() {
 
 #### 参考
 
-
+* [Stanford CS107: lecture 12](https://www.youtube.com/watch?v=0rXjvLa2NSs&t=1s&index=12&list=PL9D558D49CA734A02)
 
 
 
