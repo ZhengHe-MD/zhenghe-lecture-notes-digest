@@ -26,6 +26,7 @@
   * [第十一课 - 数据抽象中的效率与可读性](computer-science-ji-chu-ke-cheng/di-shi-yi-ke-shu-ju-chou-xiang-zhong-de-xiao-lv-yu-ke-du-xing.md)
   * [第十二课 - 数据修改](computer-science-ji-chu-ke-cheng/di-shi-er-ke-shu-ju-bian-dong.md)
   * [第十三课 - 环境模型](computer-science-ji-chu-ke-cheng/di-shi-san-ke-huan-jing-mo-xing.md)
+  * [第十四课 - 面向对象编程\(1\) - 消息传递](computer-science-ji-chu-ke-cheng/di-shi-si-ke-mian-xiang-dui-xiang-bian-7a0b28-1-xiao-xi-chuan-di.md)
 
 ## 前端杂货铺
 
