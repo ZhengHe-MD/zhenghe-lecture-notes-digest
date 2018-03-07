@@ -162,7 +162,11 @@ mutation 操作返回的是一个 lambda 过程，通过调用这个 lambda 过�
 
 面向对象与面向过程是解决复杂问题的两种思路，孰优孰劣取决于问题的特点。面向过程编程比较适合数学计算、数据转化等，数值转化多，数据种类少，数据之间关系独立的问题；面向对象编程比较适合数据种类多，数据之间关系紧密的问题。此外，很重要的一点是，面向对象与面向过程仅仅是**思路的区别，并不涉及语言本身，它们与语言无关**。
 
+#### 参考
 
+* [Youtube: SICP-2004-Lecture-14](https://www.youtube.com/watch?v=s2S30l6ofcE&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=14&t=0s)
+
+* [MIT6.006-SICP-2005-lecture-notes-14](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture16webhan.pdf)
 
 
 
