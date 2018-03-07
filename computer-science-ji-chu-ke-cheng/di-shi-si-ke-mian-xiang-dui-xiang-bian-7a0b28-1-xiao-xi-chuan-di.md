@@ -54,7 +54,42 @@
 * 主要扩展发生在抽象过程上
 * 不同的抽象数据类型之间几乎相互独立
 
-但并非所有问题都适用于这种方法，那么我们还有什么别的抽象方法呢？
+**但并非所有问题都适用于这种方法，那么我们还有什么别的抽象方法呢？**
 
+让我们用一个比较广的视角来看：一个复杂系统由系统中的数据个体以及对这些数据个体的操作所构成，于是一个复杂系统的组成部分就可以用一张二维的表格来表示：
 
+|  | Data Type 1 | Data Type 2 | Data Type 3 | Data Type 4 |
+| :--- | :--- | :--- | :--- | :--- |
+| Operation 1 | some proc | some proc | some proc | some proc |
+| Operation 2 | some proc | some proc  | some proc | some proc |
+| Operation 3 | some proc | some proc | some proc | some proc |
+| Operation 4 | some proc | some proc | some proc | some proc |
+
+实际上，我们刚才的解决问题的思路就是将不同 Data Types 的相同的 Operation 抽象出来，也就是表中的一行；如果我们转换思路，将一种 Data Type 的不同 Operation 抽象出来，也就是表中的一列，会有怎样的变化？
+
+### 另一种角度：数据是有内部状态的过程
+
+在第十三课中介绍到，每个 procedure 由两个部分构成
+
+* 参数 \(parameters\) 和过程体 \(body\)
+* 环境 \(container for name-value bindings\)
+
+利用这个模型，我们就可以尝试将数据看成是有内部状态的过程，它的内部状态在环境中，而过程的执行则在同样的环境中发生。此时，我们将数据内部状态封装 \(encapsulated\) 在过程中，对外不可见。
+
+##### 例：Pair as a Procedure with State
+
+```scheme
+(define (cons x y)
+    (lambda (msg)
+        (cond ((eq? msg 'CAR) x)
+              ((eq? msg 'CDR) y)
+              ((eq? msg 'PAIR?) #t)
+              (else (error "pair cannot" msg)))))
+(define (car p) (p 'CAR))
+(define (cdr p) (p 'CDR))
+(define (pair? p)
+    (and (procedure? p) (p 'PAIR?)))
+```
+
+上面的代码接收外部传入的 msg，利用 msg 来判断下一步所做的操作，这种编程风格被称为消息传递 \(message passing\)。消息传递编程将系统看成是多种对象以及它们之间的交流，解决问题的过程就是对象之间合理交流的结果。值得一提的是，在此之前，我们利用 Tagged Data 中的 tag 来区分不同的数据结构，这里，我们之间将 tag 转化成内部过程的一部分。
 
