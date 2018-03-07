@@ -61,7 +61,7 @@
 |  | Data Type 1 | Data Type 2 | Data Type 3 | Data Type 4 |
 | :--- | :--- | :--- | :--- | :--- |
 | Operation 1 | some proc | some proc | some proc | some proc |
-| Operation 2 | some proc | some proc  | some proc | some proc |
+| Operation 2 | some proc | some proc | some proc | some proc |
 | Operation 3 | some proc | some proc | some proc | some proc |
 | Operation 4 | some proc | some proc | some proc | some proc |
 
@@ -84,12 +84,42 @@
         (cond ((eq? msg 'CAR) x)
               ((eq? msg 'CDR) y)
               ((eq? msg 'PAIR?) #t)
+              ((eq? msg 'SET-CAR!)
+                  (lambda (new-car) (set! x new-car)))
+              ((eq? msg 'SET-CDR!)
+                  (lambda (new-cdr) (set! y new-cdr)))
               (else (error "pair cannot" msg)))))
 (define (car p) (p 'CAR))
 (define (cdr p) (p 'CDR))
 (define (pair? p)
     (and (procedure? p) (p 'PAIR?)))
+(define (set-car! p new-car)
+    ((p 'SET-CAR!) new-car))
+(define (set-cdr! p new-cdr)
+    ((p 'SET-CDR!) new-cdr))
 ```
 
-上面的代码接收外部传入的 msg，利用 msg 来判断下一步所做的操作，这种编程风格被称为消息传递 \(message passing\)。消息传递编程将系统看成是多种对象以及它们之间的交流，解决问题的过程就是对象之间合理交流的结果。值得一提的是，在此之前，我们利用 Tagged Data 中的 tag 来区分不同的数据结构，这里，我们之间将 tag 转化成内部过程的一部分。
+上面的代码接收外部传入的 msg，利用 msg 来判断下一步所做的操作，这种编程风格被称为消息传递 \(message passing\)。消息传递编程将系统看成是多种对象以及它们之间的交流，解决问题的过程就是对象之间合理交流的结果。值得一提的是，在此之前，我们利用 Tagged Data 中的 tag 来区分不同的数据结构；现在，我们将 tag 转化成内部过程的一部分。
+
+```scheme
+(define foo (cons 1 2))
+(car foo)
+; (car foo) | GE
+; (foo 'CAR) | E2
+```
+
+环境模型如下所示：
+
+（图1）
+
+数据内部的状态始终保持在 E1 中，foo 接收到外界的消息后，对 E1 中的 x, y 进行操作，完成 **car** 的操作。
+
+再看 mutation 操作
+
+```scheme
+(define bar (cons 3 4))
+(set-car! bar 0)
+```
+
+
 
