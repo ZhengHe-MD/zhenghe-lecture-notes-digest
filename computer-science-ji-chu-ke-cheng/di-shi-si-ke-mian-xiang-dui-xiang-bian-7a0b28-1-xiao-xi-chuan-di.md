@@ -76,7 +76,7 @@
 
 利用这个模型，我们就可以尝试将数据看成是有内部状态的过程，它的内部状态在环境中，而过程的执行则在同样的环境中发生。此时，我们将数据内部状态封装 \(encapsulated\) 在过程中，对外不可见。
 
-##### 例：Pair as a Procedure with State
+#### 例：Pair as a Procedure with State
 
 ```scheme
 (define (cons x y)
@@ -120,6 +120,49 @@
 (define bar (cons 3 4))
 (set-car! bar 0)
 ```
+
+环境模型如下图所示，看的时候要参考环境模型中执行 procedure 的四个步骤
+
+（图2）
+
+mutation 操作返回的是一个 lambda 过程，通过调用这个 lambda 过程可以达到修改数据内部状态的目的。
+
+#### 思考：
+
+利用 message-passing 的编程方式，我们创造了一种与 scheme 自带的 cons 不同的抽象。scheme 原生的 cons 就是数据的状态，而刚刚构造的 cons 则是一个含有内部状态的过程，我们也称它为一种数据抽象。但是，mutatior 和 selector 一个返回 procedure，一个返回值，这种行为是不一致的，我们可以继续改良它。
+
+```scheme
+(define (cons x y)
+    (define (change-car new-car) (set! x new-car))
+    (define (change-cdr new-cdr) (set! y new-cdr))
+    (lambda (msg . args)
+        (cond ((eq? msg 'CAR) x)
+              ((eq? msg 'CDR) y)
+              ((eq? msg 'PAIR?) #t)
+              ((eq? msg 'SET-CAR!)
+                  (change-car (first args))
+              ((eq? msg 'SET-CDR!)
+                  (change-cdr (first args))
+              (else (error "pair cannot" msg)))))
+(define (car p) (p 'CAR))
+(define (set-car! p val) (p 'SET-CAR! val))
+```
+
+利用 define 的规则，在环境内部定义私有过程 \(private procedure）使得 car 和 set-car! 的表现一致。
+
+### 面向对象编程
+
+我们将数据内部的状态及操作内部状态的过程合起来称为数据对象 \(data objects\)，回顾刚才的编程思路，我们不断地思考：
+
+* 数据对象 cons 应当接收哪些 messages
+* 数据对象 cons 可以支持哪些操作
+* 数据对象内部应当保持哪些状态
+
+这也就形成了面向对象编程的雏形。
+
+面向对象与面向过程是解决复杂问题的两种思路，孰优孰劣取决于问题的特点。面向过程编程比较适合数学计算、数据转化等，数值转化多，数据种类少，数据之间关系独立的问题；面向对象编程比较适合数据种类多，数据之间关系紧密的问题。此外，很重要的一点是，面向对象与面向过程仅仅是**思路的区别，并不涉及语言本身，它们与语言无关**。
+
+
 
 
 
