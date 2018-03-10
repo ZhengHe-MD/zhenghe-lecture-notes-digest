@@ -1,5 +1,7 @@
 # 第十三课 - 编译的链接过程
 
+本节用多个例子来介绍链接过程：
+
 ### 例1
 
 ```c
@@ -65,4 +67,79 @@ int main() {
 （图1）
 
 从图中可以看出，虽然调用者放了两个参数在内存中，但是函数执行者 strlen 实际只用一个 char\* 参数，因此它的实际使用范围在虚线一下。在 little-endian 机器中，代码执行后会打印 1；在 big-endian 机器中，代码执行后会打印 0。
+
+### 例3
+
+```c
+// memcmp 实际的函数原型
+// int memcmp(void *v1, void *v2, int size);
+
+int memcmp(void *v1);
+
+int main() {
+    int n = 17;
+    int m = memcmp(&n);
+}
+```
+
+代码中的 memcmp 原型声明虽然和实现不一致，但这不影响编译的顺利进行，但运行时，memcmp 的 caller --- main 函数只为 memcmp 准备了一个参数，也就是 &n，而 memcmp 本身的实现却需要三个参数，因此它会认为 saved pc 往上 12 字节都是自己的参数，这时候运行就可能出现严重的问题。具体的函数栈如下图所示：
+
+（图3）
+
+### 例4
+
+进入例4之前，先了解两种代码崩溃时抛出的错误
+
+#### Segmentation Fault
+
+运行时，在内存中有 4 个 segments， data segment、stack segment、heap segment and code segment。这些 segments 在内存中都被分配到某一段内存地址范围，当你的代码尝试 dereference 一个不属于这 4 个 segments 的地址时，就会出现 segmentation fault。比如 \*\(NULL\)。
+
+#### Bus Error
+
+运行时，为了简单硬件会将 short、int 等数值类型永远放在指定地址 \(2 或 4 的倍数\)，一旦它发现代码中存在从非指定地址去读取这些数值类型，就会抛出 Bus Error。
+
+接下来看例子
+
+```c
+int main() {
+    int i;
+    int array[4];
+    for (i=0; i<=4; i++) {
+        array[i] = 0;
+    }
+    return 0;
+}
+```
+
+可以看出代码中的 for 循环多了一次，而这多了的一次可以造成程序陷入死循环 \(在 clang-8000.0.42.1 上没有重现 \)，具体内存模型如下图所示：
+
+（图4）
+
+另外两个例子与此类似，这里只给出相关代码段
+
+```c
+// 可能造成死循环也可能不，看系统的 endian
+int main() {
+    int i;
+    short array[4];
+    for (i=0; i<=4; i++) {
+        array[i] = 0;
+    }
+    return 0;
+}
+```
+
+```c
+// 造成死循环，修改了 saved pc
+int main() {
+    int array[4];
+    int i;
+    for (i=0; i<=4; i++) {
+        array[i] -= 4;
+    }
+    return 0;
+}
+```
+
+
 
