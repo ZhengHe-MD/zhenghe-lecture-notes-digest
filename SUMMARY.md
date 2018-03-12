@@ -44,6 +44,10 @@
     * [第二节：JVM 总览](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-jie-ff1a-jvm-zong-lan.md)
 * Design Patterns
   * [SOLID 原则](java-yin-bing-shi/solid-yuan-ze.md)
+* [Java Platform Source Code Digest](java-yin-bing-shi/java-platform-source-code-digest.md)
+  * java.util
+    * List
+      * [ArrayList](java-yin-bing-shi/arraylist.md)
 
 ## 数据库那点事
 
