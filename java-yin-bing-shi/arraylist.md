@@ -163,7 +163,7 @@ private static int hugeCapacity(int minCapacity) {
     // 令人费解的代码
     if (minCapacity < 0) // overflow
         throw new OutOfMemoryError();
-        
+
     return (minCapacity > MAX_ARRAY_SIZE) ?
         Integer.MAX_VALUE :
         MAX_ARRAY_SIZE;
@@ -176,9 +176,30 @@ private static int hugeCapacity(int minCapacity) {
 
 ##### OutOfMemoryError
 
-hugeCapacity 中存在一段令人费解的代码:
+hugeCapacity 中存在一段令人费解的代码: 为什么 minCapacity 会小于 0 呢？只看目前的代码，确实无法看出原因，我们看另外一段代码：
 
+```java
+public boolean addAll(Collection<? extends E> c) {
+    Object[] a = c.toArray();
+    int numNew = a.length;
+    ensureCapacityInternal(size + numNew);  // Increments modCount
+    System.arraycopy(a, 0, elementData, size, numNew);
+    size += numNew;
+    return numNew != 0;
+}
+```
 
+这里 size + numNew 得到的 minCapacity 就可能出现溢出而产生负数，如：
 
+```java
+public static void main(String[] args) {
+    int minInteger = Integer.MIN_VALUE;
+    int maxInteger = Integer.MAX_VALUE;
+    
+    System.out.println(minInteger - 1); // 2147483647
+    System.out.println(maxInteger + 1); // -2147483648
+}
+```
 
+具体可以参考[这篇文章 ](https://zhenghe-md.gitbooks.io/zhenghe-lecture-notes-digest/di-er-8bfe-yuan-shi-shu-ju-lei-xing-ji-hu-xiang-zhuan-hua.html "CS107-第二课-原始数据类型及互相转化")。
 
