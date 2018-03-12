@@ -172,7 +172,11 @@ private static int hugeCapacity(int minCapacity) {
 
 ##### 扩容策略的复杂度分析
 
-扩容的主要策略就是 **int newCapacity = oldCapacity + \(oldCapacity &gt;&gt; 1\)** 即 **int newCapacity = 1.5 \* oldCapacity **，这种扩容方式可以将插入操作的均摊 \(amortized\) 时间、空间复杂度控制在 O\(n\) 内，具体计算过程见[这里](http://www.wolframalpha.com/input/?i=sum%281.5**k%29+for+k%3D1,log%281.5,n%29)。
+扩容的主要策略就是 **int newCapacity = oldCapacity + \(oldCapacity &gt;&gt; 1\)** 即 **int newCapacity = 1.5 \* oldCapacity **，这种扩容方式可以将插入操作的均摊 \(amortized\) 时间、空间复杂度控制在 O\(n\) 内，具体计算过程见[这里](http://www.wolframalpha.com/input/?i=sum%281.5**k%29+for+k%3D1,log%281.5,n%29)。实际上，只要每次扩容的系数大于 1，就可以获得均摊复杂度为 O\(n\) 插入性能。一般教材中，扩容系数常常以 2 为例，这里使用 1.5 主要是考虑到现实应用中的几个特点：
+
+* 系数太大可能导致分配过多
+* 系数太小可能导致分配太频繁
+* 1.5 比较好计算 \(oldCapacity &gt;&gt; 1\)
 
 ##### OutOfMemoryError
 
@@ -195,7 +199,7 @@ public boolean addAll(Collection<? extends E> c) {
 public static void main(String[] args) {
     int minInteger = Integer.MIN_VALUE;
     int maxInteger = Integer.MAX_VALUE;
-    
+
     System.out.println(minInteger - 1); // 2147483647
     System.out.println(maxInteger + 1); // -2147483648
 }
