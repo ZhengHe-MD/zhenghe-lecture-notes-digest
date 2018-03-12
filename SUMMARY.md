@@ -45,7 +45,7 @@
 * Design Patterns
   * [SOLID 原则](java-yin-bing-shi/solid-yuan-ze.md)
 * [Java Platform Source Code Digest](java-yin-bing-shi/java-platform-source-code-digest.md)
-  * java.util
+  * [java.util](java-yin-bing-shi/java-platform-source-code-digest/javautil.md)
     * List
       * [ArrayList](java-yin-bing-shi/arraylist.md)
 
