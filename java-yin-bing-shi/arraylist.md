@@ -205,5 +205,5 @@ public static void main(String[] args) {
 }
 ```
 
-具体可以参考[这篇文章 ](https://zhenghe-md.gitbooks.io/zhenghe-lecture-notes-digest/di-er-8bfe-yuan-shi-shu-ju-lei-xing-ji-hu-xiang-zhuan-hua.html "CS107-第二课-原始数据类型及互相转化")。
+具体可以参考[这篇文章](https://zhenghe-md.gitbooks.io/zhenghe-lecture-notes-digest/di-er-8bfe-yuan-shi-shu-ju-lei-xing-ji-hu-xiang-zhuan-hua.html "CS107-第二课-原始数据类型及互相转化")。
 
