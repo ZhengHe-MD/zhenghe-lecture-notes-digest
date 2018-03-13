@@ -28,6 +28,7 @@
   * [第十二课 - 数据修改](computer-science-ji-chu-ke-cheng/di-shi-er-ke-shu-ju-bian-dong.md)
   * [第十三课 - 环境模型](computer-science-ji-chu-ke-cheng/di-shi-san-ke-huan-jing-mo-xing.md)
   * [第十四课 - 面向对象编程\(1\) - 消息传递](computer-science-ji-chu-ke-cheng/di-shi-si-ke-mian-xiang-dui-xiang-bian-7a0b28-1-xiao-xi-chuan-di.md)
+  * [第十五课 - 面向对象编程\(2\) - Scheme 实现](computer-science-ji-chu-ke-cheng/di-shi-si-ke-mian-xiang-dui-xiang-bian-7a0b28-2-scheme-shi-xian.md)
 
 ## 前端杂货铺
 
