@@ -77,7 +77,7 @@ public ArrayList(int initialCapacity) {
 这里需要区分一下容量和长度：容量指的是 ArrayList 在不做重分配的情况下，最多能容纳的元素数量；长度指的是 ArrayList 当前的元素数量。因此执行如下代码会抛错：
 
 ```java
-ArrayList<Integer> arr = new ArrayList<Integer>(10);
+ArrayList<Integer> arr = new ArrayList<Integer>(20);
 arr.add(5, 10); // 当前 ArrayList 的容量为 10，长度为 0，无法直接将 10 插入到第 5 个位置
 ```
 
@@ -206,4 +206,8 @@ public static void main(String[] args) {
 ```
 
 具体可以参考[这篇文章](https://zhenghe-md.gitbooks.io/zhenghe-lecture-notes-digest/di-er-8bfe-yuan-shi-shu-ju-lei-xing-ji-hu-xiang-zhuan-hua.html "CS107-第二课-原始数据类型及互相转化")。
+
+#### 性能分析
+
+
 
