@@ -100,5 +100,11 @@ person 实例在接收到消息后，可能会需要做很多种事情，如返�
 
 具体的环境模型如下图所示：![](/assets/Screen Shot 2018-03-13 at 10.48.45 PM.jpg)
 
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-15](https://www.youtube.com/watch?v=2G5Yg-sOe9Q&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=15&t=0s)
+
+* [MIT6.006-SICP-2005-lecture-notes-15](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture17_webhan.pdf)
+
 
 
