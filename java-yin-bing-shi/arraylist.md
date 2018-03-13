@@ -209,5 +209,92 @@ public static void main(String[] args) {
 
 #### 性能分析
 
+##### 插入 \(add\)
+
+时间复杂度及空间复杂度在均摊情况下都为 O\(n\)，具体请回顾增长则略部分讲解。
+
+##### 随机访问 \(get\)
+
+```java
+E elementData(int index) {
+    return (E) elementData[index];
+}
+
+private void rangeCheck(int index) {
+    if (index >= size)
+        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+}
+
+public E get(int index) {
+    rangeCheck(inex);    
+    return elementData(index);
+}
+```
+
+由于 ArrayList 的底层是 Object\[\]，因此随机访问的时间复杂度为 O\(1\)，没有使用额外的空间。
+
+##### 查询元素位置 \(indexOf\)
+
+```java
+public int indexOf(Object o) {
+    if (o == null) {
+        for (int i = 0; i < size; i++)
+            if (elementData[i]==null)
+                return i;
+    } else {
+        for (int i = 0; i < size; i++)
+            if (o.equals(elementData[i]))
+                return i;
+    }
+    return -1;
+}
+
+public int lastIndexOf(Object o) {
+    if (o == null) {
+        for (int i = size-1; i >= 0; i--)
+            if (elementData[i]==null)
+                return i;
+    } else {
+        for (int i = size-1; i >= 0; i--)
+            if (o.equals(elementData[i]))
+                return i;
+    }
+    return -1;
+}
+```
+
+遍历 elementData，因此查询任意元素位置的时间复杂度为 O\(1\)，没有使用额外的空间。同时需要注意：
+
+1. 查询停止于第一个符合条件的元素
+2. 支持查询 null 元素
+3. 不存在查询元素返回 -1
+
+##### 删除指定位置的元素 \(remove\)
+
+```java
+public E remove(int index) {
+    rangeCheck(index);
+
+    modCount++;
+    E oldValue = elementData(index);
+
+    int numMoved = size - index - 1;
+    if (numMoved > 0)
+        System.arraycopy(elementData, index+1, elementData, index,
+                         numMoved);
+    elementData[--size] = null; // clear to let GC do its work
+
+    return oldValue;
+}
+```
+
+由于删除某个元素需要移动它后面的所有元素，因此删除指定位置元素的时间复杂度为 O\(n\)，由于 System.arraycopy 在执行过程中，如果 src \(elementData\), dest \(elementData\) 指向同一个 Array，那么复制过程中会使用临时空间存储 src Array，因此空间复杂度也为 O\(n\)。
+
+值得注意的是，**elementData\[--size\] = null** 将 elementData 外的元素的指针移除，否则 elementData\[size\] 在整个 ArrayList 被回收之前，都会保留对相应对象的指针，使得该对象无法被回收。
+
+### FAQ
+
+
+
 
 
