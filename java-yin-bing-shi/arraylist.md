@@ -78,7 +78,7 @@ public ArrayList(int initialCapacity) {
 
 ```java
 ArrayList<Integer> arr = new ArrayList<Integer>(20);
-arr.add(5, 10); // 当前 ArrayList 的容量为 10，长度为 0，无法直接将 10 插入到第 5 个位置
+arr.add(5, 10); // 当前 ArrayList 的容量为 20，长度为 0，无法直接将 10 插入到第 5 个位置
 ```
 
 ##### constructor with Collection
