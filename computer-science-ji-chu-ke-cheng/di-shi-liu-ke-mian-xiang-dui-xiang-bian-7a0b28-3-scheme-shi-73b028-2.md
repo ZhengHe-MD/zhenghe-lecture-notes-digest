@@ -98,15 +98,15 @@
 
 执行最后一句 define，我们在全局环境上创建一个 professor 实例，此时环境模型如下图所示：
 
-（图1）
+![](/assets/Screen Shot 2018-03-20 at 6.28.52 PM.jpg)
 
 当执行 professor 特有的 procedure 时，可以得到如下环境模型图：
 
-（图2）
+![](/assets/Screen Shot 2018-03-20 at 6.29.20 PM.jpg)
 
 当执行 person  特有的 procedure 时，可以得到如下环境模型图：
 
-（图3）
+![](/assets/Screen Shot 2018-03-20 at 6.29.44 PM.jpg)
 
 环境模型图中展现出整个继承的过程，值得回味。
 
@@ -166,8 +166,55 @@ delegate 与 ask 非常相似，唯一的不同在于 delegate 是从 to 身上�
             (ask self 'SAY
               (append '(therefore) stuff))))
       (else (get-method message int-person))))))
-      
 ```
 
 原因在于arrogant professor 内部的 professor 实例内部调用 SAY 时，使用的并不是 arrogant-professor 本身的 SAY，而是 professor 实例内的 SAY，因此 obviously 没有被加在每句话之后。因此稍加改动就能实现我们最初的目的。本例也能体会出，在面向对象系统设计过程中，在重用 procedure 过程中的一些微妙的变化。
+
+#### Multiple Inheritance
+
+假设系统中有新的类 Singer，它没有父类，它的 constructor 如下所示：
+
+```scheme
+(define (make-singer)
+  (lambda (message)
+    (case message
+      ((SAY)
+        (lambda (self stuff)
+          (display-message
+            (append stuff '(tra lala))))
+      ((SING)
+        (lambda (self)
+          (ask self 'SAY '(the hills are alive))))
+      (else (no-method)))))
+```
+
+这时候如果有一个新的类，它既是 Arrogant Professor 又是 Singer，暂且称它为 SAP， 这时候就出现 multiple inheritance，沿用之前的设计，我们可以在 SAP 实例内部创建一个 Arrogant Professor 实例和一个 Singer 实例：
+
+```scheme
+(define (make-s-a-p fname lname)
+  (let ((int-singer (make-singer))
+        (int-arrognt (make-arrogant-prof fname lname)))
+    (lambda (message)
+      (find-method message int-singer int-arrognt))))
+
+(define (find-method message . objects)
+  (define (try objects)
+    (if (null? objects)
+        (no-method)
+        (let ((method (get-method message (car objects))))
+          (if (not (eq? method (no-method)))
+            method
+            (try (cdr objects))))))
+  (try objects))
+```
+
+当一个类继承两个类时，就需要决定先从哪个父类寻找 procedure，我们甚至也可以让每个父类都执行对应的 procedure。这些都是设计面向对象系统的需要做的一些决定。
+
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-16](https://www.youtube.com/watch?v=NS-BpszWDao&t=0s&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=16)
+
+* [MIT6.006-SICP-2005-lecture-notes-16](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture18_webhan.pdf)
+
+
 
