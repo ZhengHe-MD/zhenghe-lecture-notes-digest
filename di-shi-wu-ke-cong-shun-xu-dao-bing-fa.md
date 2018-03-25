@@ -76,7 +76,7 @@ void SellTickets (int agentID, int numTicketsToSell) {
 
 浏览器载入网页的过程是并行、并发大显身手的地方。假设没有它们，浏览器只能使用一个线程去连接服务器，获取网页 html、css以及图片等其它的静态文件，这些文件可能各自来自不同的服务器，而与这些服务器分别建立连接的过程本身所需网络等待时间可能超过实际建立连接之后下载数据所需的时间，因此这个过程比较低效。但如果浏览器能使用多个线程去连接服务器，那么它就能够在线程 A 等待网络连接的过程中切换到线程 B ，等线程 A 的连接响应时，再从线程 B 切换回线程 A，这时候页面的整体载入时间就能够大大缩短。
 
-回到车票销售的场景，引入并发、并行确实能够提高资源利用率，但与此同时也引入了线程之间的信息不对称的问题，如下文代码所示所示，中介不再销售固定数量的不同的车票，而是通过访问余票总数来判断是否可以继续售票。如果线程 A 执行完  while \(\*numTickets &gt; 0\) 的判断后，被 Thread Manager 剥夺 CPU 时间， 同时 Thraed Manager 会把寄存器中的所有信息保存到 A 中再切换到线程 B，这时 B 看到了与 A 相同的 \*numTickets 值，作出同样的判断。这样就出现了信息不对称的问题。
+回到车票销售的场景，引入并发、并行确实能够提高资源利用率，但与此同时也引入了线程之间的信息不对称的问题，如下文代码所示所示，中介不再销售固定数量的不同的车票，而是通过访问余票总数来判断是否可以继续售票。如果线程 A 执行完  while \(\*numTickets &gt; 0\) 的判断后，被 Thread Manager 剥夺 CPU 时间， 同时 Thraed Manager 会把寄存器中的所有信息保存到 A 中再切换到线程 B，这时 B 看到了与 A 相同的余票值，作出同样的判断。这样就出现了信息不对称的问题。
 
 ```c
 int main() {
@@ -103,15 +103,7 @@ void SellTickets(int agent, int *numTicketsp) {
 }
 ```
 
-Introduce semaphore
-
-SemaphoreWait\(lock\);
-
-SemaphoreSignal\(lock\);
-
-support atomic --
-
-value is not allowed to get negative number, block and pulls itself from process
+为解决不同线程间的信息不对称问题，我们引入信号量 \(Semaphore\) 的概念。信号量可以理解成一个可以完成原子 \(atomic\) 自减、自增操作的整数，在本课的设定中，它的值永远不能小于 0 。SemaphoreWait 函数会在 semaphore 取值大于 0 时完成原子自减，在 semaphore 取值为 0 时让线程进入等待状态；SemaphoreSignal 函数会将 semaphore 的值原子自增。我们可以将 SemaphoreWait 简单地理解成等待上公厕，当公厕里有人 \(semaphore 取值等于 0 \) 时等待，当公厕里没人 \(semaphore 取值大于 0 \) 时进入并锁上门的过程；将 SemaphoreSignal 理解成上完厕所后打开门的过程，这时候我们可以将上文中的代码改进如下：
 
 ```c
 int main() {
@@ -129,7 +121,6 @@ int main() {
 }
 
 
-
 void SellTickets(int agent, int *numTicketsp, Semaphore lock) {
     while (true) {
         SemaphoreWait(lock);
@@ -141,6 +132,8 @@ void SellTickets(int agent, int *numTicketsp, Semaphore lock) {
     SemaphoreSignal(lock);
 }
 ```
+
+我们称 SemaphoreWait 与 SemaphoreSignal 之间的区域为 critical area，这个区域只能有一个线程进去。
 
 
 
