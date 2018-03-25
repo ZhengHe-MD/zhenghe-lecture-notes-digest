@@ -16,7 +16,7 @@
   * [第十二课 - 编译的预处理过程](di-shi-er-ke-yu-chu-li-yu-bian-yi.md)
   * [第十三课 - 编译的链接过程](di-shi-san-ke-bian-yi-de-lian-jie-guo-cheng.md)
   * [第十四课 - 函数的活动记录续、并发](di-shi-si-ke-liang-ge-han-shu-fang-wen-tong-yi-duan-nei-cun.md)
-  * [第十五课 - 从顺序到并发](di-shi-wu-ke-cong-shun-xu-dao-bing-fa.md)
+  * [第十五课 - 从顺序到并发和并行](di-shi-wu-ke-cong-shun-xu-dao-bing-fa.md)
 * [麻省理工 - SICP](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
   * [第二课 - 程序抽象](computer-science-ji-chu-ke-cheng/di-er-ke-cheng-xu-chou-xiang.md)
