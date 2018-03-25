@@ -133,7 +133,11 @@ void SellTickets(int agent, int *numTicketsp, Semaphore lock) {
 }
 ```
 
-我们称 SemaphoreWait 与 SemaphoreSignal 之间的区域为 critical area，这个区域只能有一个线程进去。
+我们称 SemaphoreWait 与 SemaphoreSignal 之间的区域为 critical area，这个区域只能有一个线程进去。值得一提的是，critical area 应当放置尽可能少的代码，不影响线程间通信的代码尽量放在 critical area 之外。
+
+#### 参考
+
+* [Stanford-CS107-lecture-15](https://www.youtube.com/watch?v=omE3YYpHhLo&list=PL9D558D49CA734A02&index=15\)
 
 
 
