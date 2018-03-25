@@ -127,13 +127,13 @@ void SellTickets(int agent, int *numTicketsp, Semaphore lock) {
         if (*numTicketsp == 0) break;
         (*numTickets)--;
         SemaphoreSignal(lock);
-        printf("sell a tiket");
+        printf("sell a ticket");
     }
     SemaphoreSignal(lock);
 }
 ```
 
-我们称 SemaphoreWait 与 SemaphoreSignal 之间的区域为 critical area，这个区域只能有一个线程进去。值得一提的是，critical area 应当放置尽可能少的代码，不影响线程间通信的代码尽量放在 critical area 之外。
+我们称 SemaphoreWait 与 SemaphoreSignal 之间的区域为 critical area，这个区域只能有一个线程进去。值得一提的是，critical area 应当放置尽可能少的代码，不影响线程间通信的代码尽量放在 critical area 之外，如上面的 printf\("sell a ticket"\)
 
 #### 参考
 
