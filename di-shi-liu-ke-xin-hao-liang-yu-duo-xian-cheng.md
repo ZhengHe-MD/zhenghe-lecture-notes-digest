@@ -99,7 +99,7 @@ Semaphore fullBuffers(0);
 
 ### Dining Philosophers Problem
 
-\(图1\)
+![](/assets/Screen Shot 2018-03-26 at 8.55.21 AM.jpg)
 
 如上图所示，有五个哲学家在一个餐桌上吃饭，他们必须同时拿到左右两个叉子才能开始吃饭，模拟代码如下：
 
