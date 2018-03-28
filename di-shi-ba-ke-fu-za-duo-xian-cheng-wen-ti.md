@@ -2,9 +2,7 @@
 
 ## 卖冰淇淋
 
-这个系统里面有四个角色，1 位收银员 \(Cashier\)、10 位顾客 \(Customers\)、10 - 40 位员工 \(Clerks\) 和 1 位经理 \(Manager\)，如下图所示：
-
-（图1）
+这个系统里面有四个角色，1 位收银员 \(Cashier\)、10 位顾客 \(Customers\)、10 - 40 位员工 \(Clerks\) 和 1 位经理 \(Manager\)，如下图所示：![](/assets/Screen Shot 2018-03-28 at 1.19.40 PM.jpg)
 
 角色之间的关系如下：
 
