@@ -40,7 +40,7 @@
     ((sum? exp) (eval-sum exp))
     (else
       (error "unknown expression" exp))))
-      
+
 (define (eval-sum exp)
   (+ (eval (cadr exp)) (eval (caddr exp))))
 
@@ -55,5 +55,51 @@ eval 过程通过判断表达式的第一个 token 的类型，来决定要对�
 
 上文代码利用数据驱动及防御式的编程方式组织 eval 过程，同时利用递归的方式将复杂表达式一层一层剥开，直到最简单的表达式，然后再将结果一层一层组合，最终推导得到计算表达式的结果。这就是一个最简单的 evaluator。
 
+#### names
 
+接下来，我们要在 sheme\* 中加入 names，也就是 define\* 表达式：
+
+```scheme
+(define* x* (plus* 4 5))
+(plus* x* 2)
+```
+
+首先，我们需要一种 Table ADT，可以让我们存放和获取每个 name 与 value 的 binding 关系。
+
+```
+; make-table             void -> table
+; table-get              table, symbol -> (binding | null)
+; table-put!             table, symbol, anytype -> undef
+; binding-value          binding -> anytype
+```
+
+假设这个 Table ADT 存在，scheme\* 解释器就拥有支持 name binding 的能力：
+
+```scheme
+(define (define? exp) (tag-check exp 'define*))
+
+(define (eval exp)
+  (cond
+    ((number? exp) exp)
+    ((sum? exp) (eval-sum exp))
+    ((symbol? exp) (lookup exp))
+    ((define? exp) (eval-define exp))
+    (else
+      (error "unknown expression" exp))))
+
+(define environment (make-table))
+
+(define (lookup name)
+  (let ((binding (table-get environment name)))
+    (if (null? binding)
+        (error "unbound variable: " name)
+        (binding-value binding))))
+        
+(define (eval-define exp)
+  (let ((name (cadr exp))
+        (defined-to-be (caddr exp)))
+    (table-put! environment name (eval define-to-be)) 'undefined))
+```
+
+在引入
 
