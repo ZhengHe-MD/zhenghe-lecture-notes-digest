@@ -63,5 +63,6 @@
   * MongoDB
     * [MongoDB in Action](shu-ju-ku-na-dian-shi/mongodb-in-action.md)
       * [Schema Design Example](shu-ju-ku-na-dian-shi/mongodb-in-action/schema-design-example.md)
-    * [Schema Design Example](shu-ju-ku-na-dian-shi/schema-design-example.md)
+    * [Indexes](shu-ju-ku-na-dian-shi/suo-yin.md)
+      * [Compound Index](shu-ju-ku-na-dian-shi/suo-yin/compound-index.md)
 
