@@ -37,17 +37,17 @@ MongoDB 支持对 document 的多个 fields 建立索引，这种索引叫作 co
 > db.students.createIndex({ major: 1, age: 1 })
 ```
 
-具体有关 compound index 的一些细节，查阅它的[官方文档](https://docs.mongodb.com/manual/core/index-compound/)即可，这里不再赘述。 
+具体有关 compound index 的一些细节，查阅它的[官方文档](https://docs.mongodb.com/manual/core/index-compound/)即可，这里不再赘述。
 
 #### Inside the Compound Index
 
 绝大多数 MongoDB 中的 Indexes 的背后都是 B-tree。single-field index 的结构大致如下：
 
-\(图1\)
+![](/assets/Screen Shot 2018-04-03 at 10.32.08 AM.jpg)
 
 而 compound index 的结构大致如下：
 
-\(图2\)
+![](/assets/Screen Shot 2018-04-03 at 10.32.14 AM.jpg)
 
 ##### 适合的查询
 
