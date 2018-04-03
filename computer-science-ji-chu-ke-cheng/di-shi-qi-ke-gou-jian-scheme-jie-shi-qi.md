@@ -55,7 +55,7 @@ eval 过程通过判断表达式的第一个 token 的类型，来决定要对�
 
 上文代码利用数据驱动及防御式的编程方式组织 eval 过程，同时利用递归的方式将复杂表达式一层一层剥开，直到最简单的表达式，然后再将结果一层一层组合，最终推导得到计算表达式的结果。这就是一个最简单的 evaluator。
 
-#### names
+#### Names
 
 接下来，我们要在 sheme\* 中加入 names，也就是 define\* 表达式：
 
@@ -103,7 +103,7 @@ eval 过程通过判断表达式的第一个 token 的类型，来决定要对�
 
 define\* 表达式与之前的 plus\* 表达式不同。plus\* 表达式会 evaluate 它的两个参数，我们称这种表达式为一般表达式；define\* 表达式只会 evaluate 第二个参数，把第一个参数当作 symbol，我们称不 evaluate 所有输入参数的表达式为特殊表达式 \(special forms\)。
 
-#### conditionals and if
+#### Conditionals and If
 
 scheme\* 少不了 predicates 和条件语句 if
 
@@ -134,7 +134,7 @@ scheme\* 少不了 predicates 和条件语句 if
         (else          (error "predicate not a conditional: " predicate))))))
 ```
 
-#### store operators in the environment
+#### Store operators in the environment
 
 既然有了 greater\*, sum\* 肯定少不了 lessThan\*、equal\*、difference\*、mod\* 等各种操作，如果逐一添加就会显得代码十分冗余。仔细观察可以发现，这些操作都有一个特点：先 evaluate 参数，然后对这些参数执行相应操作。这种模式就是上文提到的一般表达式，也称为 application。
 
@@ -147,7 +147,7 @@ scheme\* 少不了 predicates 和条件语句 if
   (if (primitive? operator)
       (scheme-apply (get-scheme-procedure operator) operands)
       (error "operator not a procedure: " operator)))
- 
+
 (define prim-tag 'primitive)
 (define (make-primitive scheme-proc) (list prim-tag scheme-proc))
 (define (primitive? e)               (tag-check e prim-tag))
@@ -175,4 +175,45 @@ scheme\* 少不了 predicates 和条件语句 if
 ```
 
 这是 scheme\* 解释器已经初具雏形，递归地 evaluate 表达式，特殊表达式在前，一般表达式在后。
+
+#### Environment as explicit parameter
+
+虽然已经有了 global environment，但很多情况下我们仍然需要 local environment 的支持。拥有 local environment 意味着 local environment 需要成为过程的输入参数，这样就可以使得同样的过程在不同的 local environment 中执行：
+
+```scheme
+(define (eval exp env)
+  (cond
+    ((number? exp)       exp)
+    ((symbol? exp)       (lookup exp env))
+    ((define? exp)       (eval-define exp env))
+    ((if? exp)           (eval-if exp env))
+    ((application? exp)  (apply (eval (car exp) env)
+                                 (map (lambda (e) (eval e env))
+                                      (cdr exp))))
+    (else
+      (error "unknown expression " exp))))
+
+(define (lookup name env)
+  (let ((binding (table-get env name)))
+    (if (null? binding)
+        (error "unbound variable: " name)
+        (binding-value binding))))
+
+(define (eval-define exp env)
+  (let ((name (cadr exp))
+        (defined-to-be (caddr exp)))
+    (table-put! env name (eval defined-to-be env))
+    'undefined))
+
+(define (eval-if exp env)
+  (let ((predicate    (cadr exp))
+        (consequent   (caddr exp))
+        (alternative  (cadddr exp)))
+    (table-put! env name (eval defined-to-be env))
+    'undefined))
+```
+
+这里比较费解的地方在于 \(application? exp\) 后的内容。由于一个 application 的所有参数也需要在同一个 environment 中 evaluate，因此这里利用了 lambda 和 map 依次在同一个 environment 中 evaluate 每个参数。
+
+
 
