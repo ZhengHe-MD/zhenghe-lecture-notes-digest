@@ -50,6 +50,7 @@
   * 第一课：远观 JVM
     * [第一节：Java 和 JVM 的简史](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-yi-jie-ff1a-java-he-jvm-de-jian-shi.md)
     * [第二节：JVM 总览](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-jie-ff1a-jvm-zong-lan.md)
+  * [第二课 - Class 和 Interface 的生命周期](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-ke-class-he-interface-de-sheng-ming-zhou-qi.md)
 * Design Patterns
   * [SOLID 原则](java-yin-bing-shi/solid-yuan-ze.md)
 * [Java Platform Source Code Digest](java-yin-bing-shi/java-platform-source-code-digest.md)
