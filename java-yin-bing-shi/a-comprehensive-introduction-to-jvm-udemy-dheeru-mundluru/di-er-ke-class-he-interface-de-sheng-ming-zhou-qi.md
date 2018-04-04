@@ -18,9 +18,9 @@ Class 和 Interface 统称为 Type。
 
 如果载入的是一个 Interface，那么它将不会被立即初始化。其它部分与 Class 相同。
 
-#### Class Loading
+### Class Loading
 
-class loading 的逻辑很简洁，如果要找的 Class object 已经在 JVM heap 中，那么直接返回 heap 中的 Class object；如果没有，则去 classpath 中搜索对应的 .class 文件，若找到则读取到内存中，创建相应的 Class object，并放到 JVM 的 heap 中；若未找到则抛出 ClassNotFoundException。具体流程如下图所示：
+Class loading 的逻辑很简洁，如果要找的 Class object 已经在 JVM heap 中，那么直接返回 heap 中的 Class object；如果没有，则去 classpath 中搜索对应的 .class 文件，若找到则读取到内存中，创建相应的 Class object，并放到 JVM 的 heap 中；若未找到则抛出 ClassNotFoundException。具体流程如下图所示：
 
 （图2）
 
@@ -30,7 +30,34 @@ class loading 的逻辑很简洁，如果要找的 Class object 已经在 JVM he
 
 Bootstrap Class Loader 负责载入 $java\_home$/jre/lib/rt.jar 中的 Class，这里是 Java Platform 的标准库，因此 JVM 会完全信任来自这里的 Class，在 Linking 阶段不再做 verification；Application Class Loader 负责载入用户本地 $classpath$ 上的 Class，因为这里的源不受信任，因此在 Linking 阶段会对来自于这里的 Class 做充分的 verification。
 
+##### 什么时候 Class 会被载入
 
+* 创建 Class 的实例
+* 调用 Class 的 static method
+* 访问 Class 的 static field （compile-time constants 除外）
+* Class 的子类被载入
+* 从命令行运行 Class
+* Reflection
 
+##### 什么时候 Interface 会被载入
 
+* 调用 Interface 的 static method
+* 访问 Interface 的 static field \(compile-time constants 除外\)
+* Interface 的 subInterface 被载入
+* 从命令行运行 Interface
+* Reflection
+
+### Class Object
+
+Java 使用 Class object 创建对应的实例。事实上，Java 中的 Class, Interface, Primitives, void, Arrays 都有对应的 Class object，维度、类型相同的数组，其对应的 Class object 也相同。Class object 包含了 Class 本身的许多元信息，如：
+
+```java
+String getName();
+Class getSuperClass();
+boolean isInterface();
+Class[] getInterfaces();
+ClassLoader getClassLoader();
+```
+
+这些都是 Class object 的 instance methods。
 
