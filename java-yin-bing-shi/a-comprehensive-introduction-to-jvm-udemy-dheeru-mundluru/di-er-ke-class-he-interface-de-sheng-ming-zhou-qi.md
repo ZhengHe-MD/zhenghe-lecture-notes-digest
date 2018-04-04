@@ -1,12 +1,16 @@
 # Class 和 Interface 的生命周期
 
-Class 和 Interface 统称为 Type。
+Class 和 Interface 统称为 Type，Java 程序的运行就是不同的 Types 之间互相交流的过程。然而，这些 Types 首先要被载入到 JVM 运行时中，才能开始参与和其它 Type 的交流。读完本节，如果能够大致回答以下问题：
+
+* Types 是如何被载入
+
+* 不同的 Type 按什么顺序被载入等
+
+则本节的目的也就达到了。
 
 ### 总览
 
-假设有一个 Hello.class 被 JVM 第一次载入，它的整个载入过程如下图所示：
-
-（图1）
+假设有一个 Hello.class 被 JVM 第一次载入，它的整个载入过程如下图所示：![](/assets/Screen Shot 2018-04-04 at 10.40.59 PM.jpg)
 
 按照箭头顺序，每个环节概述如下
 
@@ -20,13 +24,9 @@ Class 和 Interface 统称为 Type。
 
 ### Class Loading
 
-Class loading 的逻辑很简洁，如果要找的 Class object 已经在 JVM heap 中，那么直接返回 heap 中的 Class object；如果没有，则去 classpath 中搜索对应的 .class 文件，若找到则读取到内存中，创建相应的 Class object，并放到 JVM 的 heap 中；若未找到则抛出 ClassNotFoundException。具体流程如下图所示：
+Class loading 的逻辑很简洁，如果要找的 Class object 已经在 JVM heap 中，那么直接返回 heap 中的 Class object；如果没有，则去 classpath 中搜索对应的 .class 文件，若找到则读取到内存中，创建相应的 Class object，并放到 JVM 的 heap 中；若未找到则抛出 ClassNotFoundException。具体流程如下图所示：![](/assets/Screen Shot 2018-04-04 at 10.41.26 PM.jpg)
 
-（图2）
-
-前面提到，如果是第一次载入，Class Loader 需要去相应路径搜索对应的 class bytecode。这个路径的搜索过程是按照从信任源到不信任源的顺序进行，如下图所示：
-
-（图3）
+前面提到，如果是第一次载入，Class Loader 需要去相应路径搜索对应的 class bytecode。这个路径的搜索过程是按照从信任源到不信任源的顺序进行，如下图所示：![](/assets/Screen Shot 2018-04-04 at 10.42.04 PM.jpg)
 
 Bootstrap Class Loader 负责载入 $java\_home$/jre/lib/rt.jar 中的 Class，这里是 Java Platform 的标准库，因此 JVM 会完全信任来自这里的 Class，在 Linking 阶段不再做 verification；Application Class Loader 负责载入用户本地 $classpath$ 上的 Class，因为这里的源不受信任，因此在 Linking 阶段会对来自于这里的 Class 做充分的 verification。
 
@@ -60,4 +60,29 @@ ClassLoader getClassLoader();
 ```
 
 这些都是 Class object 的 instance methods。
+
+### Linking
+
+Linking 主要分为 Verification、Preparation 以及 Resolution 三步。
+
+#### Verification
+
+Verification 主要出于安全考虑，对来自于非信任源的 class bytecode 进行多重检查，防止这些 class 执行不安全的语句。检查的内容如：
+
+* final class 不能被继承
+* final methods 不能被重载
+
+#### Preparation
+
+Preparation 阶段主要负责为载入的 class 分配 static fields 的空间，并且初始化它们的值，如果内存空间不足，Preparation 阶段将抛出 OutOfMemoryError。如果载入 class 是为了创建实例，本阶段也会为 instance fields 分配空间。需要注意的是，class 的载入一定会发生在其 superclass 载入之后。
+
+#### Resolution
+
+Resolution 阶段主要 resolve 的是 class 所依赖的别的 class。本阶段会将别的 class 的 symbolic reference 存在 .class 文件的 constant pool 中，在实际运行阶段，这些 symbolic reference 会被替换成真正的内存地址，这个过程被称为 dynamic linking，即在运行时才真正确定所依赖的 classes。Dynamic linking 可以很容易做到动态更新，而无需重新编译源码；但如果所更新的部门与原系统不兼容，则可能导致系统崩溃。Resolution 可以发生在 linking 阶段，也可以发生在 initialization 阶段之后，前者被称为 eager loading，无论依赖的 classes 是否最终被用到，都会将依赖载入；后者被称为 lazy loading，直到真正需要的时候才去载入依赖。同时，Resolution 还会做一些安全检查，比如所依赖的 class 是否有 class 使用的变量、方法，以及 class 是否有使用所依赖 class 的权限等等。
+
+
+
+
+
+
 
