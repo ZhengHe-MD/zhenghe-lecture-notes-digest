@@ -215,5 +215,101 @@ scheme\* 少不了 predicates 和条件语句 if
 
 这里比较费解的地方在于 \(application? exp\) 后的内容。由于一个 application 的所有参数也需要在同一个 environment 中 evaluate，因此这里利用了 lambda 和 map 依次在同一个 environment 中 evaluate 每个参数。
 
+#### Add new procedures
 
+在 Scheme 中，我们可以用 lambda 自定义 procedures，lambda 表达式会返回一个在 environment model 中被称为 double bubble 的 compound procedure。本节，我们也将在 Scheme\* 解释器中支持 lambda\* 特殊表达式。
+
+lambda\* 表达式有三个重要成部分，参数、函数体以及环境，因此在 eval lambda\* 的时候，需要在返回的数据结构中保存这三部分信息。在这里我们称这个数据结构为 compound，也就是上文到的 double bubble 或 compound procedure：
+
+```scheme
+(define (lambda? e) (tag-check e 'lambda*))
+
+(define (eval exp env)
+  (cond
+    ((number? exp)       exp)
+    ((symbol? exp)       (lookup exp env))
+    ((define? exp)       (eval-define exp env))
+    ((if? exp)           (eval-if exp env))
+    ((lambda? exp)       (eval-lambda exp env))
+    ((application? exp)  (apply (eval (car exp) env)
+                                 (map (lambda (e) (eval e env))
+                                      (cdr exp))))
+    (else
+      (error "unknown expression " exp))))
+
+(define (eval-lambda exp env)
+  (let ((args (cadr exp))
+        (body (caddr exp)))
+    (make-compound args body env)))
+
+
+;; ADT that implements the "double bubble"
+;; 这里 compound 由 parameters、body、env 三部分构成，ADT 同时提供三者的 selectors
+(define compound-tag 'compound)
+(define (make-compound parameters body env)
+    (list compound-tag parameters body env))
+(define (compound? exp) (tag-check exp compound-tag))
+(define (parameters compound) (cadr compound))
+(define (body compound) (caddr compound))
+(define (env compound) (caddr compound))
+```
+
+在 eval lambda\* 表达式时，我们并没有执行实际操作，而只是老老实实地把自定义 procedures 的元素保存在 list 结构中，然后返回这个 list。当然，这里是否使用 list 并不重要，这对解释器的使用者透明。
+
+那我们如何 eval compound 呢？实际上就是实现在环境模型一节中介绍的过程：
+
+1. 创建一个新的 Frame，设为 A
+2. 将 A 的外环境指针指向 P 的外环境指针所指的环境，此时 A 及其外环境一起构成新的环境，设为 E
+3. 在 A 中，将 P 的参数与它的值绑定起来
+4. 在 E 中执行 P 的程序体
+
+```scheme
+(define (apply operator operands)
+  (cond ((primitive? operator)
+         (scheme-apply (get-scheme-procedure operator)
+                       operands))
+        ((compound? operator)
+         (eval (body operator)
+               (extend-env-with-new-frame
+                 (parameters operator)
+                 operands
+                 (env operator))))
+       (else
+         (error "operator not a procedure: " operator))))
+
+(define (extend-env-with-new-frame names values env)
+  (let ((new-frame (make-table)))
+    (make-bindings! names values new-frame)
+    (cons new-frame env))) ; 注意：这里 new-frame 在 env 之前，体现 lookup 顺序
+
+(define (make-bindings names values table)
+  (for-each
+    (lambda (name value) (table-put! table name value))
+    names values))
+
+; the initial global environment
+(define GE
+  (extend-env-with-new-frame
+    (list 'plus* 'greater*)
+    (list (make-primitive +) (make-primitive >))
+    nil))
+
+; lookup searches the list of frames for the first match
+(define (lookup name env)
+  (if (null? env)
+      (error "unbound variable: " name)
+      (let ((binding (table-get (car env) name)))
+        (if (null? binding)
+            (lookup name (cdr env))
+            (binding-value binding)))))
+
+; define changes the first frame in the environment
+(define (eval-define exp env)
+  (let ((name           (cadr exp))
+        (defined-to-be  (caddr exp)))
+    (table-put! (car env) name (eval defined-to-be env))
+    'undefined)
+```
+
+实现上，所谓的外环境指针并不真实存在，而是通过 const 将内外环境合成一个 list，利用 list 结构的先后顺序来保证 lookup 从内环境到外环境的顺序一致。
 
