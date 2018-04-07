@@ -406,5 +406,3 @@ printWindow.apply({ window: "hello world" }, null)
 
 
 
-
-
