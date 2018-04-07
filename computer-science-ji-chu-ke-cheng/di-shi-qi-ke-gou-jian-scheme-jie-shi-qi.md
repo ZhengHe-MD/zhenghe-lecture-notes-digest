@@ -6,7 +6,7 @@
 
 解释器通常由 Lexical Analyzer、Parser、Evaluator & Environment、Printer 四个部分组成，它们的关系如下图所示：
 
-\(图1\)
+![](/assets/Screen Shot 2018-04-07 at 4.23.21 PM.jpg)
 
 解释器的输入一般为一句合法的表达式的字符串，如 "\(average 4 \(+ 5 5\)\)"，该字符串将依次经过这四个组件处理
 
@@ -49,7 +49,7 @@
 
 在表达式 **'\(plus\* 24 \(plus\* 5 6\)\)** 被读入 Scheme 解释器时，它就已经被 Scheme 的 Lexical Analyzer 和 Parser 处理成了如下树状结构：
 
-（图2）
+![](/assets/Screen Shot 2018-04-07 at 4.23.54 PM.jpg)
 
 eval 过程通过判断表达式的第一个 token 的类型，来决定要对其进行什么样的操作 --- 如果是 number，就直接返回对应数值，如果是 plus\*，则将表达式交给 eval-sum 去递归推导转化成最终结果。
 
@@ -290,8 +290,8 @@ lambda\* 表达式有三个重要成部分，参数、函数体以及环境，�
 ; the initial global environment
 (define GE
   (extend-env-with-new-frame
-    (list 'plus* 'greater*)
-    (list (make-primitive +) (make-primitive >))
+    (list 'true* 'plus* 'greater*)
+    (list #t (make-primitive +) (make-primitive >))
     nil))
 
 ; lookup searches the list of frames for the first match
@@ -312,4 +312,99 @@ lambda\* 表达式有三个重要成部分，参数、函数体以及环境，�
 ```
 
 实现上，所谓的外环境指针并不真实存在，而是通过 const 将内外环境合成一个 list，利用 list 结构的先后顺序来保证 lookup 从内环境到外环境的顺序一致。
+
+#### 举例：
+
+```scheme
+(eval '(define* twice*
+  (lambda* (x*) (plus* x* x*))) GE)
+```
+
+执行完以上 define\* 语句后，GE 变为：
+
+![](/assets/Screen Shot 2018-04-07 at 4.24.05 PM.jpg)
+
+这时候，twice\* 进入 GE 后，就可以调用 twice procedure
+
+```scheme
+(eval '(twice* 4) GE)
+```
+
+首先 **'\(twice\* 4\)** 是 application，因此得到
+
+```scheme
+(apply (eval 'twice* GE)
+  (map (lambda (e) (eval e GE)) '(4)))
+```
+
+map 表达式在 GE 中 evaluate twice\* 的参数 --- 4：
+
+```scheme
+(apply (eval 'twice* GE) '(4))
+```
+
+GE 中可以找 'twice\*
+
+```scheme
+(apply (list 'compound '(x*) '(plus* x* x*) GE) '(4))
+```
+
+apply 发现后面的表达式是 compound procedure
+
+```scheme
+(eval '(plus* x* x*)
+  (extend-env-with-new-frame '(x*) '(4) GE))
+```
+
+仔细阅读 GE 的代码，实际上 environment 并不是 table，而是 list&lt;table&gt;，extend-env-with-new-frame 实际上就是在当前 env 的基础之上，在 list 的前面 const 一个 table，代表 new frame。假设 table ADT 已经存在：
+
+```scheme
+(eval '(plus* x* x*)
+  ((list 'table 'new-frame) (list 'table 'GE)))
+> 8
+```
+
+这里需要注意，如果 \(eval  '\(twice\* 4\) 时的 env 并不是 GE，则以上过程将变成
+
+```scheme
+(eval '(twice* 4) AE) ; another environment
+(apply (eval 'twice* AE)
+  (map (lambda (e) (eval e AE)) '(4)))
+(apply (eval 'twice* GE) '(4))
+(apply (list 'compound '(x*) '(plus* x* x*) GE) '(4))
+(eval '(plus* x* x*)
+  (extend-env-with-new-frame '(x*) '(4) GE))
+(eval '(plus* x* x*)
+  ((list 'table 'new-frame) (list 'table 'GE)))
+> 8
+```
+
+其中 apply 中 eval 'twice\* 的过程中，env 使用的是 GE，而不是 AE。本节的 GE 示意图中就可以看出，这里的 GE 是 'twice\* 被 define\* 的环境，而不是 eval 'twice\* 时的环境。这也是我们在环境模型中强调的重要特性。同时，这与非 “strict mode” 下的 Javascript 的闭包 \(closure\) 很相似，但略有区别：
+
+```js
+function printWindow () {
+    console.log(this.window);
+}
+
+printWindow.apply(null, null);
+> Window {postMessage: f, blur: f, focus: f, ... }
+printWindow.apply({ window: "hello world" }, null)
+> "hello world"
+```
+
+这里 window 是浏览器中 Javascript Engine 的 GE 中的对象，如果没有给出 this binding，则 this 就是 GE；但如果给出 this binding，则 this 就是给定的 this binding，**它的 lookup 不会被委托 \(delegate\) 到 GE**。环境是否以声明时的外环境为最后委托人是语言的 evaluation model 设计中的取舍点，不同语言会有不同的做法。
+
+### 小结
+
+本节构建了 scheme\* 的解释器，同时也定义 scheme\* language 的语法，它们也是 scheme 解释器和 scheme language 的子集。我们不仅可以用 scheme 来构建 scheme 的解释器，也可以用其它语言来构建 scheme 解释器。有了解释器，我们就可以用它来解决一般问题。
+
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-17](https://www.youtube.com/watch?v=ExeUbrynvNE&index=17&t=0s&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF)
+* [MIT6.006-SICP-2005-lecture-notes-17-1](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture19webhan.pdf)
+* [MIT6.006-SICP-2005-lecture-notes-17-2](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture19webha2.pdf)
+
+
+
+
 
