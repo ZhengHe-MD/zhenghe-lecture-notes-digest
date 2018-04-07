@@ -20,6 +20,7 @@
   * [第十六课 - 信号量与多线程（1）](di-shi-liu-ke-xin-hao-liang-yu-duo-xian-cheng.md)
   * [第十七课 - 信号量与多线程（2）](di-shi-qi-ke-xin-hao-liang-yu-duo-xian-cheng.md)
   * [第十八课 - 复杂多线程问题](di-shi-ba-ke-fu-za-duo-xian-cheng-wen-ti.md)
+  * [第十九课 - 函数式编程 - Scheme 基础](di-shi-jiu-ke-han-shu-shi-bian-cheng-scheme-ji-chu.md)
 * [麻省理工 - SICP](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
   * [第二课 - 程序抽象](computer-science-ji-chu-ke-cheng/di-er-ke-cheng-xu-chou-xiang.md)
