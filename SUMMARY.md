@@ -38,6 +38,7 @@
   * [第十五课 - 面向对象编程\(2\) - Scheme 实现](computer-science-ji-chu-ke-cheng/di-shi-si-ke-mian-xiang-dui-xiang-bian-7a0b28-2-scheme-shi-xian.md)
   * [第十六课 - 面向对象编程\(3\) - Scheme 实现\(2\)](computer-science-ji-chu-ke-cheng/di-shi-liu-ke-mian-xiang-dui-xiang-bian-7a0b28-3-scheme-shi-73b028-2.md)
   * [第十七课 - 构建 Scheme 解释器](computer-science-ji-chu-ke-cheng/di-shi-qi-ke-gou-jian-scheme-jie-shi-qi.md)
+  * [第十八课 - Scheme 解释器中的 Eval-Apply 的循环](computer-science-ji-chu-ke-cheng/di-shi-ba-ke-schemejie-shi-qi-zhong-de-eval-apply-de-xun-huan.md)
 
 ## 前端杂货铺
 
