@@ -8,7 +8,7 @@
 
 eval 和 apply 是 Scheme 解释器中 Evaluator 的核心组件，它们一同定义 Scheme 语言的 semantics。
 
-（图1）
+![](/assets/Screen Shot 2018-04-09 at 10.09.29 PM.jpg)
 
 如上图所示，Scheme 解释器接收合法的表达式 \(exp\) 以及表达式所处的环境 \(env\) 后，会通过 eval  procedure 来在这个环境中 evaluate 这个表达式。复杂表达式通常会包含另一个 application 表达式，这个表达式会被 eval procedure 进一步处理成更简单的表达式 \(exp\) 及其由新生成的 frame 以及之前的环境一同组成的新环境，然后再次被 eval procedure 进行处理。这个过程周而复始，直到表达式变成 primitive procedure 为止。
 
@@ -179,11 +179,11 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
 
 ###### let 表达式示意图
 
-\(图2\)
+![](/assets/Screen Shot 2018-04-09 at 10.09.56 PM.jpg)
 
 ###### lambda 表达式示意图
 
-（图3）
+![](/assets/Screen Shot 2018-04-09 at 10.10.26 PM.jpg)
 
 ##### 例3：Syntactic Sugar - named procedures
 
@@ -238,19 +238,19 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
 
 抽象地看，我们心中的环境模型如下图所示：
 
-（图4）
+![](/assets/Screen Shot 2018-04-09 at 10.10.50 PM.jpg)
 
 具体地看，我们心中的环境模型如下图所示：
 
-（图5）
+![](/assets/Screen Shot 2018-04-09 at 10.11.12 PM.jpg)
 
 extend-environment 时，抽象地看，我们心中的环境模型如下图所示：
 
-（图6）
+![](/assets/Screen Shot 2018-04-09 at 10.11.34 PM.jpg)
 
 extend-environment 时，具体地看，我们心中的环境模型如下图所示：
 
-（图7）
+![](/assets/Screen Shot 2018-04-09 at 10.12.09 PM.jpg)
 
 对应的代码如下：
 
@@ -418,5 +418,21 @@ Dynamic scoping 指的就是在 procedure 被调用时的环境中寻找 free va
         (else (error "Unkown procedure" procedure))))
 ```
 
-搞定！
+搞定！这里我们再次体会到了 semantics 与 syntax 的分离的好处，改变 semantics 中的 scoping 的同时 syntax 不受丝毫影响。
+
+### 小结
+
+* eval 和 apply 定义了 Scheme 的 semantics
+
+* syntax procedures 定义了 Scheme 的 syntax
+
+* semantics 和 syntax 的隔离使得二者可以单独改变而不影响对方
+
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-18](https://www.youtube.com/watch?v=B2SIMf1gPHc&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=18&t=0s)
+* [MIT6.006-SICP-2005-Lecture-notes-18](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture20webhan.pdf)
+* [MIT6.006-SICP-2005-Lecture-codes](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture20evalco.pdf)
+
+
 
