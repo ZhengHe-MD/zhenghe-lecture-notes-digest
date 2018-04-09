@@ -315,7 +315,7 @@ Global Environment 以及其中的 primitive procedures 是功能完整的 Schem
     (define-variable! 'true #t initial-env)
     (define-variable! 'false #f initial-env)
     initial-env))
-(define the-global-environment (setup-environment))            
+(define the-global-environment (setup-environment))
 ```
 
 #### 组件5：read-eval-print loop
@@ -332,16 +332,91 @@ Global Environment 以及其中的 primitive procedures 是功能完整的 Schem
   (driver-loop))
 ```
 
-### Lexical Scoping & Dynamic Scoping
+### Scoping
 
 不论是何种语言都有 Scoping 的概念，以 Scheme 为例：当我们 evaluate procedures 的时候，在 procedure body 中会遇到两种不同的 symbol:
 
 * bound parameters: 在 procedure 的参数中定义过的 symbol
 * free variables: 在 procedure 的参数中未定义过的 symbol
 
-我们如何找到 free variables 对应的值就是所谓的 scoping。Lexical Scoping 指的就是在 procedure 被定义时的环境中寻找 free variables 的 bindings。具体可以看一下 make-procedure 的实现：
+我们如何找到 free variables 对应的值就是所谓的 scoping。
 
+#### Lexical Scoping
 
+Lexical Scoping 指的就是在 procedure 被定义时的环境中寻找 free variables 的 bindings。具体可以看一下 make-procedure 的实现：
 
+```scheme
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+```
 
+make-procedure 在创建 procedure 的过程中把当前环境也保存在其中，它将被用于寻找 free variables 的 bindings。在 Lexical binding 的情形中：
+
+```scheme
+> (define (foo x y)
+    (lambda (z) (+ x y z)))
+> (define bar (foo 1 2))
+> (bar 3)
+6
+```
+
+其中 foo 的内环境是 **x = 1, y = 2**，外环境是 **GE**；bar 的内环境是 **z = 3**，外环境是 **foo 的内环境**。因此在 eval \(bar 3\) 的时候，会在 bar 的内环境中找到 z，bar 的外环境 （即 foo 的内环境）中找到 free variables - x, y 对应的值。
+
+#### Dynamic Scoping
+
+Dynamic scoping 指的就是在 procedure 被调用时的环境中寻找 free variables 的 bindings。在 dynamic scoping 的情形中：
+
+```scheme
+> (define (pooh x)
+    (bear 20))
+> (define x 3)
+> (define (bear y)
+    (+ x y))
+> (pooh 9)
+29
+> (bear 20)
+23
+```
+
+在 eval 表达式 \(pooh 9\) 和表达式 \(bear 20\) 的过程中，bear procedure 的调用环境不同，因此得到的 free variable x 的值不同，eval 的结果也就不同。如果你熟悉 ECMAScript，阅读完本节后，ECMAScript 中的 this binding 对你来说应该很容易理解。
+
+#### Dynamic Scoping Scheme
+
+显然，目前构建的 Scheme 解释器采用的是 Lexical Scoping，如果我们想造一个 Dynamic Scoping 的 Scheme，需要怎么做呢？本节课一直强调的一句话是 "eval 和 apply 定义了 Scheme 的 semantics"，显然 Scoping 属于 semantics，因此要改变 Scoping 当然应当修改 eval 和 apply。
+
+首先 make-procedure 不需要保留环境
+
+```scheme
+(define (make-procedure parameters body)
+  (list 'procedure parameters body))
+
+(define (m-eval exp env)
+  (cond
+    ;...
+    ((lambda? exp)
+      (make-procedure (lambda-parameters exp)
+        (lambda-body exp))) ; 去除 env
+    ;...
+    ((application? exp)
+     (d-apply (m-eval (operator exp) env)
+              (list-of-values (operands exp) env)
+              env))         ; 新增 env
+    (else (error "Unkown expression -- M-EVAL" exp))))
+```
+
+然后再修改 d-apply ，在 extend-environment 的时候使用 calling environment 而不是 procedure environment
+
+```scheme
+(define (d-apply procedure arguments calling-env)
+  (cond ((primitive-procedure? procedure)
+         (apply-primitive-procedure procedure arguments))
+        ((compound-procedure? procedure)
+         (eval-sequence
+           (procedure-body procedure)
+           arguments
+           calling-env)))
+        (else (error "Unkown procedure" procedure))))
+```
+
+搞定！
 
