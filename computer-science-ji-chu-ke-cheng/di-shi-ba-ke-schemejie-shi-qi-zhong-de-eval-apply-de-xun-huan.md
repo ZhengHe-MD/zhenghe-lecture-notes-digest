@@ -4,7 +4,7 @@
 
 ### Scheme 解释器的五个组件
 
-#### eval/apply core
+#### 组件1：eval/apply core
 
 eval 和 apply 是 Scheme 解释器中 Evaluator 的核心组件，它们一同定义 Scheme 语言的 semantics。
 
@@ -42,7 +42,7 @@ eval 和 apply 是 Scheme 解释器中 Evaluator 的核心组件，它们一同�
 2. 检查特殊形式，如 assignment、define 这些有副作用的表达式，if、cond、begin 这些流程控制表达式，以及 lambda 表达式
 3. application 表达式，它可以是编程者定义的任意 procedure，接收自定义的参数，执行自定义的过程。通常，如果一个表达式是复合表达式且不属于任意已知的特殊表达式，它就会被认为是一个 application 表达式。
 
-##### **apply** 
+##### **apply**
 
 会首先 eval 表达式中的参数，即表达式的 operands，然后再将 eval 后的参数传递给表达式中的 procedure，即表达式的 operator，最后 eval 这个 procedure，这个 procedure 可以是 primitive procedures 也可以是用户自定义的一般 procedures。在计算模型引入 mutation 之后，Scheme 的 procedure 通常需要支持执行多个表达式，并以最后一个表达式的返回值来代表整体表达式的返回值，因此 m-apply 需要支持执行 body 中含有多个表达式的 procedure:
 
@@ -68,7 +68,7 @@ eval 和 apply 是 Scheme 解释器中 Evaluator 的核心组件，它们一同�
 
 但我们还没体会到 "eval 和 apply 定义了 Scheme 的 semantics" 。我们先用大白话解释一下 semantics 的意思。这里 semantics 指的是编程语言背后的意义，这个意义与具体的语法无关。比如要表达 “我爱你”，不同的语言有不同的语法，但被后的意义都是一个主体对另一个主体的感情。接下来我们将通过下一个组件的介绍来体会这句话。
 
-#### syntax procedures
+#### 组件2：syntax procedures
 
 syntax procedures 决定语言的语法，即任意表达式的合法性。在 Scheme 解释器中，首先我们需要一些常用 procedure 来检测表达式的类型：
 
@@ -80,7 +80,7 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
 
 (define (tagged-list? exp tag)
   (and (pair? exp) (eq? (car exp) tag)))
- 
+
 (define (quoted? exp) (tagged-list? exp 'quote))
 (define (text-of-quotation exp) (cadr exp))
 
@@ -89,13 +89,8 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
 (define (assignment-variable exp) (cadr exp))
 (define (assignment-value exp) (caddr exp))
 
+; ... definition
 (define (definition? exp) (tagged-list? exp 'define))
-(define (definition-variable exp)
-  (if (symbol? (cadr exp)) (cadr exp) (caadr exp)))
-(define (define-value exp)
-  (if (symbol? (cadr exp))
-      (caddr exp)
-      (make-lambda (cdadr exp) (cddr exp))))
 
 (define (lambda? exp) (tagged-list? exp 'lambda))
 (define (lambda-parameters lambda-exp) (cadr lambda-exp))
@@ -122,7 +117,7 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
 
 搞定！我们只修改了 syntax，而语言的 semantics 不受影响。
 
-##### 例2：Syntatic Sugar
+##### 例2：Syntactic Sugar - let -&gt; lambda
 
 我们还可以添加语法糖，比如将 let binding 转化成 lambda：
 
@@ -136,6 +131,9 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
 ```
 
 我们又需要改变什么呢？
+
+* 在 m-eval 的 cond 中增加处理 let 表达式的情况，并把处理的工作 dispatch 给 let-&gt;combination procedure
+* 实现 let 表达式到 lambda 表达式的转化，即 let-&gt;combination
 
 ```scheme
 (define (m-eval exp env)
@@ -162,6 +160,97 @@ syntax procedures 决定语言的语法，即任意表达式的合法性。在 S
         (body (let-body let-exp)))
     (cons (list 'lambda names body) values)))
 ```
+
+我们知道在 Scheme 中，除了原始数据类型，剩下的东西都是 list，那么从 let 表达式转化成 lambda 表达式的过程，实际上就是一个 list 到另一个 list 的转化过程，如下面这个表达式：
+
+```scheme
+(let ((x 23)
+      (y 15))
+  (do-something x y))
+```
+
+经过 let-combination 转化后就会变成：
+
+```scheme
+((lambda (x y)
+   (do-somthing x y))
+ 23 15)
+```
+
+###### let 表达式示意图
+
+\(图2\)
+
+###### lambda 表达式示意图
+
+（图3）
+
+##### 例3：Syntactic Sugar - named procedures
+
+在当前环境下，如果我们要在环境中定义 procedure，即 named procedure，我们必须这么写：
+
+```scheme
+(define m-sum (lambda (x y) (+ x y))
+```
+
+如果我们想更简单一点：
+
+```scheme
+(define (m-sum x y) (+ x y))
+```
+
+那世界就更美好一点。怎么做？
+
+首先看一下处理 definition 的 procedure:
+
+```scheme
+(define (eval-definition exp env)
+  (define-variable! (definition-variable exp)
+                    (m-eval (definition-value exp) env)
+                    env))
+(define (definition-variable exp) (cadr exp))
+(define (definition-value exp) (caddr exp))
+```
+
+与前面的例子相似，我们只需要修改 syntax 而不需要改动 semantics，这里我们希望 definition-variable 和 definition-value 同时兼容两种形式：
+
+```scheme
+(define (definition-variable exp)
+  (if (symbol? (cadr exp)) (cadr exp) (caadr exp)))
+(define (define-value exp)
+  (if (symbol? (cadr exp))
+      (caddr exp)
+      (make-lambda (cdadr exp) (cddr exp))))
+```
+
+搞定！现在相信你对 “eval 和 apply 定义了 Scheme 的 semantics” 这句话能够有所体会。当我们需要修改语法时，只需要增删改处理不同类别表达式的 procedures。
+
+#### 组件3：environment manipulation
+
+之前我们提到环境模型的实现时，假设背后已经存在一个 table ADT，现在来看一下具体的实现。
+
+首先重新整理一遍对环境的需求：
+
+* 支持往环境中添加新的 binding
+* 环境拥有外环境指针，能根据外环境指针找到它的外环境 \(enclosing environment\)，以支持环境链。
+
+我们可以用 list 来完成这些需求。
+
+抽象地看，我们心中的环境模型如下图所示：
+
+（图4）
+
+具体地看，我们心中的环境模型如下图所示：
+
+（图5）
+
+extend-environment 时，抽象地看，我们心中的环境模型如下图所示：
+
+（图6）
+
+extend-environment 时，具体地看，我们心中的环境模型如下图所示：
+
+
 
 
 
