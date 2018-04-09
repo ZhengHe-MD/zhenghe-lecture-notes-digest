@@ -290,5 +290,58 @@ extend-environment 时，具体地看，我们心中的环境模型如下图所�
   (env-loop env))
 ```
 
+#### 组件4：primitives and initial env
+
+Global Environment 以及其中的 primitive procedures 是功能完整的 Scheme 解释器不可缺少的一部分，否则我们需要重复制造许多轮子：
+
+```scheme
+(define primitive-procedures
+  (list (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+        (list 'null? null?)
+        (list '+ +)
+        (list '> >)
+        (list '= =)
+        (list '* *)
+        ; ... more primitives
+  ))
+
+(define (setup-environment)
+  (let ((initial-env (extend-environment 
+                      (primitive-procedure-names)
+                      (primitive-procedure-objects)
+                      the-empty-environment)))
+    (define-variable! 'true #t initial-env)
+    (define-variable! 'false #f initial-env)
+    initial-env))
+(define the-global-environment (setup-environment))            
+```
+
+#### 组件5：read-eval-print loop
+
+和解释器的 evaluator 交互，需要 read-eval-print loop \(REPL\) 组件，它读取用户输入、eval 表达式、打印结果然后再次等待用户输入，不断循环。
+
+```scheme
+(define (driver-loop)
+  (prompt-for-input input-prompt)
+  (let ((input (read))
+    (let ((output (m-eval input the-global-env)))
+      (announce-output output-prompt)
+      (user-print output)))
+  (driver-loop))
+```
+
+### Lexical Scoping & Dynamic Scoping
+
+不论是何种语言都有 Scoping 的概念，以 Scheme 为例：当我们 evaluate procedures 的时候，在 procedure body 中会遇到两种不同的 symbol:
+
+* bound parameters: 在 procedure 的参数中定义过的 symbol
+* free variables: 在 procedure 的参数中未定义过的 symbol
+
+我们如何找到 free variables 对应的值就是所谓的 scoping。Lexical Scoping 指的就是在 procedure 被定义时的环境中寻找 free variables 的 bindings。具体可以看一下 make-procedure 的实现：
+
+
+
 
 
