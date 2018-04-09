@@ -252,5 +252,43 @@ extend-environment 时，具体地看，我们心中的环境模型如下图所�
 
 （图7）
 
+对应的代码如下：
+
+```scheme
+(define (make-frame variables values) (cons variables values))
+(define (add-binding-to-frame! var val frame)
+  (set-car! frame (cons var (car frame)))
+  (set-cdr! frame (cons val (cdr frame))))
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (< (length vars) (length vals))
+          (error "Too many args supplied" vars vals)
+          (error "Too few args supplied" vars vals))))
+```
+
+使用时，需要从环境链中搜索出对应的 binding:
+
+```scheme
+; helper
+(define (enclosing-environment env) (cdr env))
+(define (first-frame env) (car env))
+(define the-empty-environment '())
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+
+(define (lookup-variable-value var env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars) (env-loop (enclosing-environment env)))
+            ((eq? var (car vars)) (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error "Unbound variable -- LOOKUP" var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame) (frame-values frame)))))
+  (env-loop env))
+```
+
 
 
