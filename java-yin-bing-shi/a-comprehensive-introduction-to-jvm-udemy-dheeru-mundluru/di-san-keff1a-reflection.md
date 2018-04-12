@@ -47,5 +47,77 @@ Void.TYPE // void.class
 Boolean.TYPE // boolean.class
 ```
 
+### Demo
+
+#### Access object reference
+
+```java
+public static void demoClassObjectAccess () {
+    // Using objectRef.getClass()
+    String[] strArray = {"a", "b", "c"};
+    System.out.println("\nstrArray.getClass().getName(): " + strArray.getClass().getName());
+    
+    // using Class.forName
+    Class clazz = null;
+    try {
+        clazz = Class.forName("com.semanticsquare.jvm.User");
+    } catch (ClassNotFoundException e) {
+        System.out.println("\nCan't find class ...");
+    }
+    System.out.println("\nclazz.getName(): " + clazz.getName());
+    System.out.println("clazz.isInterface(): " + clazz.isInterface());
+    System.out.println("clazz.getInterfaces(): " + clazz.getInterfaces().length);
+    System.out.println("clazz.getSuperclass().getName(): " + clazz.getSuperclass().getName());
+    
+    // Exception is thrown as Class.forName cannot be used on primitives
+    try {
+        System.out.println("\nClass.forName(\"boolean\").getName(): " + Class.forName("boolean").getName());
+    } catch (ClassNotFoundException e) {
+        System.out.println("\nClassNotFoundException due to Class.forName(\"boolean\")");
+    }
+    System.out.println("\nint.class.getName(): " + int.class.getName());
+}
+```
+
+##### Reflection
+
+```java
+// demoCoreReflection(Class.forName("com.semanticsqaure.jvm.User");
+public static void demoCoreReflection (Class clazz) throws InstantiationException,
+        IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    System.out.println("\n In demoCoreReflection...");
+    
+    Object object = null;
+    try {
+        object = clazz.newInstance(); // 必须有默认构造器
+    } catch (InstantiationException e) {
+        System.out.println("Can't initiate ...");
+    } catch (IllegalAccessException e) {
+        System.out.println("Can't access ...");
+    }
+    
+    for (Method m : clazz.getDeclaredMethods()) {
+        System.out.println("Method name: " + m.getName());
+        if (m.getReturnType() == void.class) {
+            System.out.println("Method's return type is void!!!");
+        }
+    }
+    
+    for (Constructor c : clazz.getDeclaredConstructors()) {
+        System.out.println("Constructor: " + c.getName() + ", # parameters: ", c.getParametersTypes().length);
+    }
+    
+    @SuppressWarnings("unchecked")
+    Constructor<User> userConstructor = clazz.getDeclaredConstructor(int.class, String.class, String.class, String.class, String.class);
+    @SuppressWarnings("unchecked")
+    User user = userConstructor.newInstance(101, "john", "john@semanticsquare.com", "male", "user");
+    
+    @SuppressWarnings("unchecked")
+    Method m = clazz.getDeclaredMethod("saveWebLink", String.class, String,class);
+    Object result = m.invoke(user, "http://www.google.com", "Google");
+    System.out.println("Result of invoking saveWebLink: " + ((Boolean) result).booleanValue));
+}
+```
+
 
 
