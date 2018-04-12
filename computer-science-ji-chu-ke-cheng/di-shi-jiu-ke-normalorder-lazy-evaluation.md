@@ -67,7 +67,7 @@ eval arg
              (list-of-delayed-args arguments env)  ; list-of-delayed-args
              (procedure-environment procedure))))
          (else (error "Unkown proc" procedure))))
- 
+
 ; 对应使用 apply 的地方也要改动
 (define (l-eval exp env)
   (cond ((self-evaluating? exp) exp)
@@ -170,5 +170,93 @@ Memo-izing Thunk 的原理再简单不过，计算一次以后就把结果记下
         (else obj))
 ```
 
+### Normal Order And Language Design \(pros and cons\)
 
+Language Design Choice 和人生中的每一个选择一样，都是 trade-off，选择 Normal Order 的 trade-off 如下：
+
+* pros：只在必要的时候计算
+* cons:
+  1. 可能造成重复计算
+  2. 不确定计算发生的时间
+
+Memo-izing evaluation 似乎可以解决 cons1，但有时候我们希望 expression 每次都被重新计算。因此解决 Normal Order 的 cons 的本质在于让程序员来决定什么时候 evaluate expression，举例如下：
+
+```scheme
+(lambda (a (b lazy) c (d lazy-memo)) ;...)
+```
+
+* a、c: applicative order
+* b: 每次需要的时候都重新计算
+* d: 只计算一次就记住结果
+
+```scheme
+(define (first-variable var-decls) (car var-decls))
+(define (rest-variables var-decls) (cdr var-decls))
+(define declaration? pair?)
+
+(define (parameter-name var-decl)
+  (if (pair? var-decl) (car var-decl) var-decl))
+
+(define (lazy? var-decl)
+  (and (pair? var-decl)
+       (eq? 'lazy (cadr var-decl))))
+
+(define (memo? var-decl)
+  (and (pair? var-decl)
+       (eq? 'lazy-memo (cadr var-decl))))
+
+; 需要一直支持 value, lazy, lazy-memo 的 delay-it
+(define (delay-it decl exp env)
+  (cond ((not (declaration? decl))
+         (l-eval exp env))
+        ((lazy? decl)
+         (list 'thunk exp env))
+        ((memo? decl)
+         (list 'thunk-memo exp env))
+        (else (error "unkown declaration:" decl))))
+
+; 以及新的 force-it
+(define (force-it obj)
+  (cond ((thunk? obj)                     ; eval, but don't remember it
+         (actual-value (thunk-exp obj)
+                       (thunk-env obj)))
+        ((memoized-thunk? obj)            ; eval and remember
+         (let ((result (actual-value (thunk-exp obj)
+                                     (thunk-env obj))))
+           (set-car! obj 'evaluated-thunk)
+           (set-car! (cdr obj) result)
+           (set-cdr! (cdr obj) '())
+           result))
+        ((evaluated-thunk? obj) (thunk-evalue obj))
+        (else obj)))
+        
+; 修改 l-apply
+(define (l-apply procedure arguments env)          
+  (cond (primitive-procedure? procedure)
+        (apply-primitive-procedure
+          procedure
+          (list-of-arg-values arguments env)))     
+        ((compound-procedure? procedure)
+         (l-eval-sequence
+           (procedure-body procedure)
+           (let ((params (procedure-parameters procedure)))
+             (extend-environment
+               (map parameter-name params)                  ; 取出参数名
+               (list-of-delayed-args params arguments env)  ; 把参数的设置 (actual value、lazy、lazy-memo) 传递下去
+               (procedure-environment procedure)))))
+         (else (error "Unkown proc" procedure))))
+
+(define (list-of-delayed-args var-decls exps env)
+  (if (no-operations? exps)
+      '()
+      (cons (delay-it (first-variable var-decls)
+                      (first-operand exps)
+                      env)
+            (list-of-delayed-args
+              (rest-variables var-decls)
+              (rest-operands exps)
+              env))))
+```
+
+现在我们的 Scheme Evaluator 已经支持自由定义参数的计算方式：actual value、lazy 以及 lazy-memo。
 
