@@ -146,9 +146,7 @@ eval arg
 
 Memo-izing Thunk 的原理再简单不过，计算一次以后就把结果记下来，下次用到的时候再拿出来即可。
 
-具体示意图如下：
-
-（图1）
+具体示意图如下：![](/assets/Screen Shot 2018-04-13 at 11.26.08 PM.jpg)
 
 需要注意的是，为了使用 thunk 的所有地方都能立即看到 thunk 被 evaluate 过，这里使用 mutation 把 thunk 编程 evaluated-thunk:
 
@@ -295,7 +293,7 @@ Memo-izing evaluation 似乎可以解决 cons1，但有时候我们希望 expres
 
 stream 由两个部分组成，当前的值，和未来值的 promise，也可以理解成一个特殊的 pair，示意图如下：
 
-（图2）
+![](/assets/Screen Shot 2018-04-13 at 11.27.02 PM.jpg)
 
 有了它，我们可以只计算需要的部分。假设我们需要 1 - 100000000 之间的第 100 个素数，通常会这么做：
 
@@ -327,7 +325,11 @@ stream 由两个部分组成，当前的值，和未来值的 promise，也可�
                      (stream-cdr stream))))
 ```
 
-既然我们只计算自己想要的数据，那么就可能存在无限大小的数据结构，比如：
+既然我们只计算自己想要的数据，那么就可能存在无限大小的数据结构
+
+##### 例1： ones
+
+定义 ones 为每个元素都为 1 的无限序列
 
 ```scheme
 (define ones (cons-stream 1 ones))
@@ -336,7 +338,7 @@ stream 由两个部分组成，当前的值，和未来值的 promise，也可�
 
 ones 的结构如下：
 
-（图3）
+![](/assets/Screen Shot 2018-04-13 at 11.27.20 PM.jpg)
 
 如果没有 normal order：
 
@@ -345,4 +347,65 @@ ones 的结构如下：
 ```
 
 因为在 procedure body 中执行 \(cons 1 ones\) 时 ones 尚未被定义，因此抛错；而在 normal order 的情况下，\(cons-stream 1 ones\) 被执行时，ones 是 lazy 的，因此不会抛错。
+
+##### 例2：add-stream
+
+也可以把两个无限序列相加：
+
+```scheme
+(define (add-stream s1 s2)
+  (cond ((null? s1) '())
+        ((null? s2) '())
+        (else (cons-stream
+                (+ (stream-car s1) (stream-car s2))
+                (add-streams (stream-cdr s1)
+                             (stream-cdr s2)))))
+
+(define ints
+  (cons-stream 1 (add-streams ones ints)))
+
+; ones:  1 1 1 1 1 ...
+; ints:  1 2 3 4 5 ...
+```
+
+##### 例3：revisit primes
+
+还有一种找素数的方法，就是从 2 开始，找到下一个整数，就忽略所有能被该整数整除的整数：
+
+```scheme
+(define (sieve str)
+  (cons-stream
+    (stream-car str)
+    (sieve (stream-filter
+             (lambda (x)
+               (not (divisible? x (stream-car str))))
+             (stream-cdr str)))))
+
+(define primes
+  (sieve (stream-cdr ints)))
+```
+
+##### 例4：integration
+
+```scheme
+(define (integral integrand init dt)
+  (define int
+    (cons-stream
+      init
+      (add-streams (stream-scale dt integrand)
+                   init)))
+
+(integral ones 0 2)
+; =>    0 -> 2 -> 4 -> 6 -> 8
+; Ones: 1    1    1    1    1
+; Scale:2    2    2    2    2
+```
+
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-19](https://www.youtube.com/watch?v=vAxgBQ0sA00&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&index=19&t=0s)
+* [MIT6.006-SICP-2005-Lecture-notes-19-1](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture21webhan.pdf)
+* [MIT6.006-SICP-2005-Lecture-notes-19-2](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-001-structure-and-interpretation-of-computer-programs-spring-2005/lecture-notes/lecture21webha2.pdf)
+
+
 
