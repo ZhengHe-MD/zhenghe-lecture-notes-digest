@@ -229,7 +229,7 @@ Memo-izing evaluation 似乎可以解决 cons1，但有时候我们希望 expres
            result))
         ((evaluated-thunk? obj) (thunk-evalue obj))
         (else obj)))
-        
+
 ; 修改 l-apply
 (define (l-apply procedure arguments env)          
   (cond (primitive-procedure? procedure)
@@ -259,4 +259,39 @@ Memo-izing evaluation 似乎可以解决 cons1，但有时候我们希望 expres
 ```
 
 现在我们的 Scheme Evaluator 已经支持自由定义参数的计算方式：actual value、lazy 以及 lazy-memo。
+
+### Streams
+
+有了 Normal Order Scheme Evaluator，我们就可以从另一个角度来看待系统。以前，我们有这些方法来理解系统：
+
+* 把系统看作是一个 procedure，main procedure 里面可以分成 init、start、finish procedures，而这些 procedures 还可以继续被细化。这时候系统就是一个在规定时间执行规定命令的个体。
+* 把系统看作是一个容器，容器内部有不同种类、不同数量的对象，这些对象互相交流、改变状态，所有对象的状态集合就是系统的状态，系统的使用者可以从中获取自己想要的信息。
+
+还有另外一种理解：
+
+* 把系统看作是时间轴上的一组状态，系统中的每个对象按时间顺序连续地输出自己的状态，从而系统能够随时知道自己的整体状况。
+
+这里 “按时间顺序连续地输出自己的状态” 就是 Streams。
+
+##### Stream Abstraction
+
+```scheme
+; message passing style
+(define (cons-stream x (y lazy-memo))
+  (lambda (msg)
+    (cond ((eq? msg 'stream-car) x)
+          ((eq? msg 'stream-cdr) y)
+          (else (error "unkown stream msg" msg)))))
+ 
+(define (stream-car s) (s 'stream-car))
+(define (stream-cdr s) (s 'stream-cdr))
+
+; normal style
+(define (cons-stream x (y lazy-memo)
+  (cons x y))
+(define stream-car car)
+(define stream-cdr cdr)
+```
+
+stream 由两个部分组成，当前的值，和未来值的 promise。
 
