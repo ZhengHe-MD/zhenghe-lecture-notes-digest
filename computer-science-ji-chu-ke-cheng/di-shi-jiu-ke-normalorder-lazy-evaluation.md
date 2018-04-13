@@ -282,7 +282,7 @@ Memo-izing evaluation 似乎可以解决 cons1，但有时候我们希望 expres
     (cond ((eq? msg 'stream-car) x)
           ((eq? msg 'stream-cdr) y)
           (else (error "unkown stream msg" msg)))))
- 
+
 (define (stream-car s) (s 'stream-car))
 (define (stream-cdr s) (s 'stream-cdr))
 
@@ -293,5 +293,56 @@ Memo-izing evaluation 似乎可以解决 cons1，但有时候我们希望 expres
 (define stream-cdr cdr)
 ```
 
-stream 由两个部分组成，当前的值，和未来值的 promise。
+stream 由两个部分组成，当前的值，和未来值的 promise，也可以理解成一个特殊的 pair，示意图如下：
+
+（图2）
+
+有了它，我们可以只计算需要的部分。假设我们需要 1 - 100000000 之间的第 100 个素数，通常会这么做：
+
+```scheme
+(list-ref
+  (filter (lambda (x) (prime? x))
+          (enumerate-interval 1 100000000))
+  99)
+```
+
+以上代码首先会遍历 1 - 100000000 之间的所有整数，找到所有素数，再从中取第 100 个素数。显然在这里我们做了很多额外的计算。我们也可以按需去获取 1 - 100000000 之间的整数，一旦找到第 100 个素数立即停止：
+
+```scheme
+(define (stream-interval a b)
+  (if (> a b)
+      the-empty-stream
+      (cons-stream a (stream-interval (+ a 1) b))))
+
+(stream-ref
+  (stream-filter (lambda (x) (prime? x))
+                 (stream-interval 1 100000000))
+  99)
+
+(define (stream-filter pred stream)
+  (if (pred (stream-car stream))
+      (cons-stream (stream-car stream) 
+                   (stream-filter pred (stream-cdr stream)))
+      (stream-filter pred 
+                     (stream-cdr stream))))
+```
+
+既然我们只计算自己想要的数据，那么就可能存在无限大小的数据结构，比如：
+
+```scheme
+(define ones (cons-stream 1 ones))
+(stream-car (stream-cdr ones)) ; => 1
+```
+
+ones 的结构如下：
+
+（图3）
+
+如果没有 normal order：
+
+```scheme
+(define ones (cons 1 ones)) ; => error, ones undefined
+```
+
+因为在 procedure body 中执行 \(cons 1 ones\) 时 ones 尚未被定义，因此抛错；而在 normal order 的情况下，\(cons-stream 1 ones\) 被执行时，ones 是 lazy 的，因此不会抛错。
 
