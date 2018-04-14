@@ -23,6 +23,7 @@
   * [第十九课 - 函数式编程 - Scheme 基础 \(1\)](di-shi-jiu-ke-han-shu-shi-bian-cheng-scheme-ji-chu.md)
   * [第二十课 - 函数式编程 - Scheme 基础 \(2\)](di-er-shi-ke-han-shu-shi-bian-cheng-scheme-ji-chu-2.md)
   * [第二十一课 - 函数式编程 - Scheme 基础 \(3\)](di-er-shi-yi-ke-han-shu-shi-bian-cheng-scheme-ji-chu-3.md)
+  * [第二十二课 - 函数式编程 - Scheme 基础 \(4\)](di-er-shi-er-ke-han-shu-shi-bian-cheng-scheme-ji-chu-4.md)
 * [麻省理工 - SICP](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
   * [第二课 - 程序抽象](computer-science-ji-chu-ke-cheng/di-er-ke-cheng-xu-chou-xiang.md)
