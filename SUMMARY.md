@@ -75,3 +75,7 @@
     * [Indexes](shu-ju-ku-na-dian-shi/suo-yin.md)
       * [Compound Index](shu-ju-ku-na-dian-shi/suo-yin/compound-index.md)
 
+## 算法拾趣
+
+* [power set](suan-fa-shi-qu/power-set.md)
+
