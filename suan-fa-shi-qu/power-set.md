@@ -31,27 +31,53 @@
 ##### Python:
 
 ```py
-def power_set(s):
-    if len(s) == 0:
-        return [[]]
+def power_set(s):                                            # complexity (#calls * complexity/op)
+    if len(s) == 0:                                          #    n * 1
+        return [[]]                                          #      1
     else:
-        ps1 = power_set(s[1:]) 
-        s1 = s[0]
-        ps1_s1 = list(map(lambda x: s1 + x, ps1))
-        return ps1 + ps1_s1
+        ps1 = power_set(s[1:])                               #    F(n-1)
+        s1 = s[0]                                            #    n * 1
+        ps1_s1 = list(map(lambda x: s1 + x, ps1))            #    F(n-1)
+        return ps1 + ps1_s1                                  #    2F(n-1)
 ```
 
 #### 复杂度分析：
 
 由于 scheme 中的 append 、python 中的 ps1 + ps1\_s1 操作都是 θ\(m+n\) ，设计算集合 （大小为 n）的 power-set 的时空复杂度为 F\(n\)，则可以推导出：
 
-F\(n\) = F\(n-1\) + F\(n-1\) + c = 2 F\(n-1\) + c &gt; 2^n F\(0\) = c \* O\(2^n\)
+F\(n\) = 4F\(n-1\) + n + c ~= 4 F\(n-1\) &gt; 4^n F\(0\) = c \* O\(4^n\)
 
 具体分析：
 
-* append 以及 + 操作都被执行 2^n 次，因此时间复杂度为 O\(2^n\)
+* append 以及 + 操作都被执行 2^n 次，且每次执行的时间复杂度为 F\(n-1\)，从推导可以看出时间复杂度为 O\(4^n\)
 
-* append 以及 + 操作都需要 2^n 空间，因此空间复杂度为 O\(2^n\)
+* append 以及 + 操作每次执行的空间复杂度为 F\(n-1\)，从推导可以看出空间复杂度为 O\(4^n\)
 
+#### cProfile
 
+执行 cProfile
+
+```py
+import cProfile
+
+cProfile.run('power_set(list(range(20)))')
+```
+
+可以得到
+
+```
+1048620 function calls (1048600 primitive calls) in 1.374 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.083    0.083    1.374    1.374 <string>:1(<module>)
+  1048575    1.038    0.000    1.038    0.000 powerset.py:10(<lambda>)
+     21/1    0.253    0.012    1.291    1.291 powerset.py:4(power_set_1)
+        1    0.000    0.000    1.374    1.374 {built-in method builtins.exec}
+       21    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+```
+
+可以发现 lambda 确实被执行了 2^20 次。
 
