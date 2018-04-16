@@ -27,11 +27,23 @@ def power_set(s):
     if len(s) == 0:
         return [[]]
     else:
-        ps1 = power_set(s[1:])
+        ps1 = power_set(s[1:]) 
         s1 = s[0]
         ps1_s1 = list(map(lambda x: s1 + x, ps1))
-        return ps1 + ps1_s1 
+        return ps1 + ps1_s1
 ```
+
+#### 复杂度分析：
+
+由于 scheme 中的 append 、python 中的 ps1 + ps1\_s1 操作都是 θ\(m+n\) ，设计算集合 （大小为 n）的 power-set 的时空复杂度为 F\(n\)，则可以推导出：
+
+F\(n\) = F\(n-1\) + F\(n-1\) + c = 2 F\(n-1\) + c &gt; 2^n F\(0\) = c \* O\(2^n\)
+
+具体分析：
+
+* append 以及 + 操作都被执行 2^n 次，因此时间复杂度为 O\(2^n\)
+
+* append 以及 + 操作都需要 2^n 空间，因此空间复杂度为 O\(2^n\)
 
 
 
