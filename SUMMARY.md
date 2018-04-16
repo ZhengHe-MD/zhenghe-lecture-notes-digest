@@ -78,4 +78,5 @@
 ## 算法拾趣
 
 * [power set](suan-fa-shi-qu/power-set.md)
+* [shuffle](suan-fa-shi-qu/shuffle.md)
 
