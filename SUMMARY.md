@@ -43,6 +43,7 @@
   * [第十七课 - 构建 Scheme 解释器](computer-science-ji-chu-ke-cheng/di-shi-qi-ke-gou-jian-scheme-jie-shi-qi.md)
   * [第十八课 - Scheme 解释器中的 Eval-Apply 的循环](computer-science-ji-chu-ke-cheng/di-shi-ba-ke-schemejie-shi-qi-zhong-de-eval-apply-de-xun-huan.md)
   * [第十九课 - Normal Order \(Lazy\) Evaluation](computer-science-ji-chu-ke-cheng/di-shi-jiu-ke-normalorder-lazy-evaluation.md)
+  * [第二十课 - 通用机 \(Universal Machines\)](computer-science-ji-chu-ke-cheng/di-er-shi-ke-tong-yong-ji-universal-machines.md)
 
 ## 前端杂货铺
 
