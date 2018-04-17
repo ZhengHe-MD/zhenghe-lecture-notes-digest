@@ -61,6 +61,8 @@
     * [第二节：JVM 总览](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-jie-ff1a-jvm-zong-lan.md)
   * [第二课：Class 和 Interface 的生命周期](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-ke-class-he-interface-de-sheng-ming-zhou-qi.md)
   * [第三课：Reflection](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-san-keff1a-reflection.md)
+  * 第四课 - JVM Memory, Garbage Collection, and Bytecode Instructions
+    * [第一节：Runtime Data Areas](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-yi-jie-ff1aruntime-data-areas.md)
 * Design Patterns
   * [SOLID 原则](java-yin-bing-shi/solid-yuan-ze.md)
 * [Java Platform Source Code Digest](java-yin-bing-shi/java-platform-source-code-digest.md)
