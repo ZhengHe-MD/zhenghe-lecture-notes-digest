@@ -20,5 +20,9 @@ JVM 也是普通的用户程序，因此它也存在于用户空间中，如果 
 * JIT Code 是 JIT Compiler 编译的经常被执行的代码，这些代码同样需要存储在 Memory 中
 * Direct Buffer 是为了提高 IO 效率在 JVM 与 OS 的 IO 之间建立的一条捷径，在高性能缓存中发挥重要作用，通过 Direct Buffer，JVM 直接在 Native Memory 中请求 IO 空间，而不在 Java Heap 中分配相关空间。
 
+#### 参考
+
+* [Thanks for the memory, Linux](https://www.ibm.com/developerworks/library/j-nativememory-linux/)
+
 
 
