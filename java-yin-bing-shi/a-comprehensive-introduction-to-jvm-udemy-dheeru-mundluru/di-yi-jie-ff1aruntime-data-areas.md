@@ -10,7 +10,15 @@ JVM 也是普通的用户程序，因此它也存在于用户空间中，如果 
 
 ### JVM Runtime Data Areas
 
-\(图1）
+![](/assets/Screen Shot 2018-04-18 at 9.38.25 PM.jpg)
 
-如上图所示，JVM 的运行时内存由所有线程共用的 Method Area、Heap \(Java Heap\)，每个线程私有的 Stack、PC、Native Method Stack，以及
+如上图所示，JVM 的运行时内存由所有线程共用的 Method Area、Heap \(Java Heap\)，每个线程私有的 Stack、PC、Native Method Stack，以及 JIT Code、Direct Buffer 用到的额外的 Native Memory 共同组成。注意，Native Memory = User space - Java Heap。
+
+* Java Heap 用来存储 Java objects，包括 Class object 、arrays 等。Java Heap 的大小可以用 java 命令行的选项来控制
+* Method Area 用来存储 Class data，以及 Class 中各种 methods 的 bytecode
+* JVM Stack 用于记录 method 调用的状态，局部变量信息，Native Method Stack 与 JVM Stack 类似，不过是用来记录 Native method 的相关信息。PC 用于记录下一个命令的内存地址，通常指向 Method Area 的 bytecode。JVM stack 、PC 和 Native Method Stack 都是每个线程独有的
+* JIT Code 是 JIT Compiler 编译的经常被执行的代码，这些代码同样需要存储在 Memory 中
+* Direct Buffer 是为了提高 IO 效率在 JVM 与 OS 的 IO 之间建立的一条捷径，在高性能缓存中发挥重要作用，通过 Direct Buffer，JVM 直接在 Native Memory 中请求 IO 空间，而不在 Java Heap 中分配相关空间。
+
+
 
