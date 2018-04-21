@@ -86,4 +86,5 @@
 
 * [power set](suan-fa-shi-qu/power-set.md)
 * [shuffle](suan-fa-shi-qu/shuffle.md)
+* [permutation](suan-fa-shi-qu/permutation.md)
 
