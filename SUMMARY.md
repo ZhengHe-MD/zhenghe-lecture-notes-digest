@@ -46,6 +46,7 @@
   * [第十九课 - Normal Order \(Lazy\) Evaluation](computer-science-ji-chu-ke-cheng/di-shi-jiu-ke-normalorder-lazy-evaluation.md)
   * [第二十课 - 通用机 \(Universal Machines\)](computer-science-ji-chu-ke-cheng/di-er-shi-ke-tong-yong-ji-universal-machines.md)
   * [第二十一课 - 寄存器机器 \(Register Machines\)](computer-science-ji-chu-ke-cheng/di-er-shi-yi-ke-ji-cun-qi-ji-qi-register-machines.md)
+  * [第二十二课 - 子程序 \(subroutine\)、栈 \(stack\) 和递归 \(recursion\)](computer-science-ji-chu-ke-cheng/di-er-shi-er-ke-zi-cheng-xu-subroutine3001-zhan-stack-he-di-gui-recursion.md)
 
 ## 前端杂货铺
 

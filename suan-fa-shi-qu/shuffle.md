@@ -22,11 +22,11 @@ import random
 def shuffle(arr):                                                   # complexity (calls * complexity/op)
     tmp_arr = arr[:]                                                #   1 * n
     new_arr = []                                                    #   1 * 1
-    
+
     while len(tmp_arr) > 0:
         rand_int = random.randint(0, len(tmp_arr) - 1)              #   n * 1
         new_arr.append(tmp_arr.pop(rand_int))                       #   n * k ~= n * (n/2)
-    
+
     return new_arr
 ```
 
@@ -49,7 +49,7 @@ import random
 def shuffle(arr):                                                    # complexity (calls * complexity/op)
     for i in reversed(range(1, len(arr))):                           
         j = random.randint(0, i)                                     #   n * 1
-        arr[i], arr[j] = arr[j], arr[i]                              #   n * 1 
+        arr[i], arr[j] = arr[j], arr[i]                              #   n * 1
 ```
 
 根据右边注释对每行代码的复杂度分析，可以得出本算法的时间复杂度为 O\(n\)，整个过程中没有用到额外的存储空间，因此空间复杂度为 O\(1\)。插个题外话，arr\[i\], arr\[j\] = arr\[j\], arr\[i\] 的是否有用到额外的空间：
