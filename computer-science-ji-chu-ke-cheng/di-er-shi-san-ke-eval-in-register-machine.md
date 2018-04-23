@@ -82,5 +82,76 @@ ev-lambda
 * ev-variable 负责在环境中查询变量的 binding，因此 ev-variable 取出 exp 中的变量表达式以及 env 中的环境，利用 lookup-variable-value 过程从环境中取出对应的变量值，放入 val 寄存器中，然后返回 continue 指向的返回地址
 * ev-lambda 负责处理 lambda 表达式，lambda 表达式需要存储参数、过程体以及当时的环境，因此 ev-lambda 依次从 exp 中取出参数和过程体，然后从 exp 中取出环境，用 make-procedure 将三者打包，放入 val 寄存器中，最后返回 continue 指向的返回地址。
 
+##### ev-definition: 递归调用 eval-dispatch
+
+与上文中 eval-helpers 的例子 ev-self-eval、ev-variable 和 ev-lambda 不同，ev-definition 需要递归调用 eval-dispatch：
+
+```scheme
+ev-definition
+  (assign unev (op definition-variable) (reg exp))
+  (save unev)
+  (save env)
+  (save continue)
+  (assign exp (op definition-value) (reg exp))
+  (assign continue (label ev-definition-1))
+  (goto (label eval-dispatch))
+ev-definition-1
+  (restore continue)
+  (restore env)
+  (restore unev)
+  (perform (op define-variable!)
+           (req unev) (reg val) (reg env))
+  (assign val (const ok))
+  (goto (reg continue))
+```
+
+由于 eval-dispatch 可能会修改 uenv、env、continue 寄存器，同时在递归调用结束后 ev-definition 还需要原先这些寄存器里的数据，因此在递归调用之前，需要把它们压入栈中，调用完成中再从栈中弹出。
+
+##### ev-if: 递归调用 eval-dispatch
+
+```scheme
+ev-if
+  (save exp)
+  (save env)
+  (save continue)
+  (assign continue (label ev-if-decide))
+  (assign exp (op if-predicate) (reg exp))
+  (goto (label eval-dispatch))
+ev-if-decide
+  (restore continue)
+  (restore env)
+  (restore exp)
+  (test (op true?) (reg val))
+  (branch (label ev-if-consequent))
+ev-if-alternative
+  (assign exp (op if-alternative) (reg exp))
+  (goto (label eval-dispatch))
+ev-if-consequent
+  (assign exp (op if-consequent) (reg exp))
+  (goto (label eval-dispatch))
+```
+
+* 递归调用 eval-dispatch 获取 predicate 的结果，同样在递归调用之前将 uenv、env、continue 压入栈中，递归调用之后再将它们从栈中弹出
+* 在调用 alternative 和 consequent 时，由于 ev-if 无需对 alternative 和 consequent 的返回值做后处理，因此 ev-if 使用尾递归优化 \(Tail-call optimization\)。如果没有尾递归优化，它们的写法如下所示：
+
+```scheme
+ev-if-alternative
+  (save continue)
+  (assign continue (label alternative1))
+  (assign exp (op if-alternative) (reg exp))
+  (goto (label eval-dispatch))
+alternative1
+  (restore continue)
+  (goto (label continue))
+ev-if-consequent
+  (save continue)
+  (assign continue (label consequent1))
+  (assign exp (op if-consequent) (reg exp))
+  (goto (label eval-dispatch))
+consequent1
+  (restore continue)
+  (goto (label continue))
+```
+
 
 
