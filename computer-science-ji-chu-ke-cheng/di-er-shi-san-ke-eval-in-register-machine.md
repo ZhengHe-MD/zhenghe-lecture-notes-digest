@@ -153,5 +153,102 @@ consequent1
   (goto (label continue))
 ```
 
+##### Sequences: 递归调用 eval-dispatch 与尾递归优化
+
+```scheme
+ev-begin
+  (save continue)
+  (assign unev (op begin-actions) (reg exp))
+  (goto (label ev-sequence))
+  
+; ev-sequence: used by begin and apply (lambda bodies)
+;
+; inputs:  unev      list of expressions
+;          env       environment in which to evaluate
+;          stack     top value is return point
+; writes:  all       (calls eval without saving)
+; output:  val
+; stack:   top value removed
+ev-sequence
+  (assign exp (op first-exp) (reg unev))
+  (test (op last-exp?) (reg unev))
+  (branch (label ev-sequence-last-exp))
+  (save unev)
+  (save env)
+  (assign continue (label ev-sequence-continue))
+  (goto (label eval-dispatch))
+ev-sequence-continue
+  (restore env)
+  (restore unev)
+  (assign unev (op rest-exps) (reg unev))
+  (goto (label ev-sequence))
+ev-sequence-last-exp
+  (restore continue)
+  (goto (label eval-dispatch))
+```
+
+* ev-sequence-last-exp 没有再进行额外的入栈出栈开销，做了尾递归优化，使得 sfact 这样尾递归表达式能够按照迭代过程的方式来执行。但尾递归优化无法对 env 和 unev 使用，原因在于二者在递归调用的过程中可能被修改，如果不压入栈中就会丢失对应的信息。
+* ev-sequence-continue 没有使用 val 寄存器，原因在于 sequence 语句，只以最后一条语句的返回值作为最终返回结果，中间表达式的返回结果都忽略不计。
+
+##### Applications
+
+###### apply-dispatch
+
+```scheme
+; inputs:    proc    procedure to be applied
+;            argl    list of arguments
+;            stack   top value is return point
+; writes:    all     (calls ev-sequence)
+; output:    val
+; stack:     top value removed
+
+apply-dispatch
+  (test (op primitive-procedure?) (reg proc))
+  (branch (label primitive-apply))
+  (test (op compound-procedure?) (reg proc))
+  (branch (label compound-apply))
+  (goto (label unknown-procedure-type))
+```
+
+###### primitive-apply
+
+```scheme
+primitive-apply
+  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))
+  (restore continue)
+  (goto (reg continue))
+```
+
+###### compound-apply
+
+```scheme
+compound-apply
+  (assign unev (op procedure-parameters) (reg proc))
+  (assign env (op procedure-environment) (reg proc))
+  (assign env (op extend-environment)
+              (reg unev) (reg argl) (reg env))
+  (assign unev (op procedure-body) (reg proc))
+  (goto (label ev-sequence))
+```
+
+###### ev-application
+
+```scheme
+ev-application
+  (save continue)
+
+ev-appl-operator
+  (assign unev (op operands) (reg exp))
+  (save env)
+  (save unev)
+  (assign exp (op operator) (reg exp))
+  (assign continue (label ev-appl-did-operator))
+  (goto (label eval-dispatch))
+ev-appl-did-operator
+  (restore unev)
+  (restore env)
+  (assign proc (reg val))
+```
+
 
 
