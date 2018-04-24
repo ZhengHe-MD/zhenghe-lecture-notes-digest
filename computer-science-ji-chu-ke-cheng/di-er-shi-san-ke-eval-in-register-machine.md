@@ -107,7 +107,7 @@ ev-definition-1
 
 由于 eval-dispatch 可能会修改 uenv、env、continue 寄存器，同时在递归调用结束后 ev-definition 还需要原先这些寄存器里的数据，因此在递归调用之前，需要把它们压入栈中，调用完成中再从栈中弹出。
 
-##### ev-if: 递归调用 eval-dispatch
+##### ev-if: 递归调用 eval-dispatch 与尾递归优化
 
 ```scheme
 ev-if
