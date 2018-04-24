@@ -160,7 +160,7 @@ ev-begin
   (save continue)
   (assign unev (op begin-actions) (reg exp))
   (goto (label ev-sequence))
-  
+
 ; ev-sequence: used by begin and apply (lambda bodies)
 ;
 ; inputs:  unev      list of expressions
@@ -239,7 +239,7 @@ ev-application
 
 ev-appl-operator
   (assign unev (op operands) (reg exp))
-  (save env)
+  (save env)  
   (save unev)
   (assign exp (op operator) (reg exp))
   (assign continue (label ev-appl-did-operator))
@@ -248,7 +248,51 @@ ev-appl-did-operator
   (restore unev)
   (restore env)
   (assign proc (reg val))
+  ; eval argl
+  (assign argl (op empty-arglist))
+  (test (op no-operands?) (reg unev))
+  (branch (label apply-dispatch))
+  (save proc)
+ev-appl-operand-loop
+  (save argl)
+  (assign exp (op first-operand) (reg unev))
+  (test (op last-operand?) (reg unev))
+  (branch (label ev-appl-last-arg))
+  ;; eval one operand
+  (save env)
+  (save unev)
+  (assign continue (label ev-appl-accumulate-arg))
+  (goto (label eval-dispatch))
+ev-appl-accumulate-arg
+  (restore unev)
+  (restore env)
+  (restore argl)
+  (assign argl (op adjoin-arg) (reg val) (reg argl))
+  (assign unev (op rest-operands) (reg unev))
+  (goto (label ev-appl-operand-loop))
+ev-appl-last-arg
+  (assign continue (label ev-appl-accum-last-arg))
+  (goto (label eval-dispatch))
+ev-appl-accum-last-arg
+  (restore argl)
+  (assign argl (op adjoin-arg) (reg val) (reg argl))
+  (restore proc)
+  (goto (label apply-dispatch))
 ```
+
+由于 operator 自身可能包含 application，它们可能会 extend-environment，也会使用到 unev 寄存器，因此在 eval operator 的时候，需要把当前的 env、uenv 寄存器压入栈中保存起来。eval operator 结束时，结果会被存在 val 寄存器中，ev-appl-did-operator 把它放入 proc 寄存器中，等待下一步被调用。
+
+接下来 ev-appl-operand-loop、ev-appl-last-arg 和 ev-appl-accum-last-arg 一同 eval application 的参数，最后执行 application。
+
+现在我们完成了 EC-EVAL 的主要组件，也能体验到用 register machine 构建 universal machine，也即 evaluator 的过程。
+
+### 小结
+
+本节通过大量代码讲解了如何用 register machine 构建 universal machine 的过程，让我们对 scheme evaluator 的底层拥有最基本的了解。非研究目的代码不必细扣。
+
+#### 参考
+
+* [Youtube: SICP-2004-Lecture-23](https://www.youtube.com/watch?v=1eQpcms7c98&t=1538s)
 
 
 
