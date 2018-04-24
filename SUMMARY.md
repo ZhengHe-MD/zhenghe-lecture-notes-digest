@@ -74,6 +74,7 @@
     * List
       * [ArrayList](java-yin-bing-shi/arraylist.md)
     * [HashSet](java-yin-bing-shi/java-platform-source-code-digest/javautil/hashset.md)
+    * [Map](java-yin-bing-shi/java-platform-source-code-digest/javautil/map.md)
 
 ## 数据库那点事
 
