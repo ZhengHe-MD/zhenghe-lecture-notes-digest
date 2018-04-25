@@ -202,7 +202,138 @@ public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> co
     return (Comparator<Map.Entry<K, V>> & Serializable)
         (c1, c2) -> c1.getKey().compareTo(c2.getKey());
 }
+
+public static <K, V> Comparator<Map.Entry<K, V>> comparingByKey(Comparator<? super K> cmp) {
+    Objects.requireNonNull(cmp);
+    return (Comparator<Map.Entry<K, V>> & Serializable)
+        (c1, c2) -> cmp.compare(c1.getKey(), c2.getKey());
+}
 ```
+
+* **&lt;K extends Comparable&lt;? super K&gt;, V&gt;** 用来指定 Comparator 参数的类别，K 需要实现 Comparable Interface
+* **\(&lt;Comparator&lt;Map.Entry&lt;K, V&gt;&gt; & Serializable\)** 指定返回的参数不仅实现 Comparator Interface，而且实现 Serializable Interface
+
+用法示例如下：
+
+```java
+// 1.
+Map<String, Integer> res1 = unsortMap.entrySet().stream()
+    .sorted(Map.Entry.comparingByKey())
+    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+// 2.
+Map<String, Integer> res2 = new LinkedHashMap<>();
+unsortedMap.entrySet().stream()
+    .sorted(Map.Entry.comparingByKey())
+    .forEachOrdered(x -> res2.put(x.getKey(), x.getValue()));
+```
+
+##### Entry: static comparingByValue - O\(1\)
+
+```java
+public static <K, V extends Comparable<? super V>> Comparator<Map.Entry<K, V>> comparingByValue() {
+    return (Comparator<Map.Entry<K, V>> & Serializable)
+        (c1, c2) -> c1.getValue().compareTo(c2.getValue());
+}
+
+public static <K, V> Comparator<Map.Entry<K, V>> comparingByValue(Comparator<? super V> cmp) {
+    Objects.requireNonNull(cmp);
+    return (Comparator<Map.Entry<K, V>> & Serializable)
+        (c1, c2) -> cmp.compare(c1.getValue(), c2.getValue());
+}
+```
+
+与 comparingByKey 类似。
+
+Map.Entry Interface 的讨论到此结束，继续回到 Map Interface
+
+#### Comparison and hashing
+
+##### equals - O\(1\)
+
+```java
+boolean equals(Object o);
+```
+
+判断两个 map 是否相等。specification 里面定义，如果 Map m1 与 Map m2 中储存相同的键值对，也即 **m1.entrySet\(\).equals\(m2.entrySet\(\)\) **返回 true，那么两个 map 相等。同时这也表明，两个 map 是否相等并不取决于它们的实现，不同实现的 map 可能也含有相同的键值对。
+
+##### hashCode - O\(1\)
+
+```java
+int hashCode();
+```
+
+specification 中定义一个 map 的 hashCode 应该等于它的所有 entry 的 hashCode 的和，这也保证两个相等的 map，它们的 hashCode 也相等。
+
+#### Defaultable methods
+
+default method 是 Java 8 新增的语言特性，允许在 Interface 定义默认方法，从而减小 Interface 实现者所需做的工作。
+
+##### getOrDefault - O\(1\)
+
+```java
+default V getOrDefault(Object key, V defaultValue) {
+    V v;
+    return (((v = get(key)) != null) || containsKey(key))
+        ? v
+        : defaultValue;
+}
+```
+
+此方法意义明确，实现非常精致：
+
+1. get\(key\) 的同时赋值来避免二次调用 get\(key\)
+2. **\(\(\(v = get\(key\)\) != null\) \|\| containsKey\(key\)\)** 很巧妙地表达了两种 case
+
+##### forEach - O\(n\)
+
+```java
+default void forEach(BiConsumer<? super K, ? super V> action) {
+    Objects.requireNonNull(action);
+    for (Map.Entry<K, V> entry : entrySet()) {
+        K k;
+        V v;
+        try {
+            k = entry.getKey();
+            v = entry.getValue();
+        } catch (IllegalStateException ise) {
+            // this usually means the entry is no longer in the map
+            throw new ConcurrentModificationException(ise);
+        }
+        action.accept(k, v);
+    }
+}
+```
+
+forEach 依次对 entrySet 中的每一个 entry 执行 action 操作，当 entry.getKey\(\) 或 entry.getValue\(\) 发生错误时，一般是背后 map 的键值被修改或删除。
+
+##### replaceAll - O\(n\)
+
+```java
+default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    Objects.requireNonNull(function);
+    for (Map.Entry<K, V> entry : entrySet()) {
+        K k;
+        V v;
+        try {
+            k = entry.getKey();
+            v = entry.getValue();
+        } catch(IllegalStateException ise) {
+            throw new ConcurrentModificationException(ise);
+        }
+        
+        v = function.apply(k, v);
+        
+        try {
+            entry.setValue(v);
+        } catch(IllegalStateException ise) {
+            throw new ConcurrentModificationException(ise);
+        }
+    }
+}
+```
+
+replaceAll 依次将 entrySet 的每个 entry 的 value 用 function 转化成另一个与 value 类别兼容的值，两个 try catch 尽最大努力做到及早发现并发修改导致的错误。
 
 #### 参考：
 
