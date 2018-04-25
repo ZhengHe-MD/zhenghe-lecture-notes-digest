@@ -35,6 +35,8 @@ Map<String, Integer> map = new HashMap<>();
 
 ### Instance Methods
 
+#### Query Operations
+
 ##### size - O\(1\)
 
 ```java
@@ -87,6 +89,8 @@ V get(K key);
 
 用 containsKey
 
+#### Modifications
+
 ##### put - O\(1\)
 
 ```java
@@ -103,6 +107,8 @@ V remove(Object key);
 
 如果 map 中不存在键为 key 的键值对，则返回 null；如果存在则删除该键值对，同时返回被删除键值对的 value。同样，因为可能存在 value 为 null 的情况，因此返回 null 并不代表 map 中一定不存在键为 key 的键值对。
 
+#### Bulk Operations
+
 ##### putAll - O\(k\)
 
 ```java
@@ -118,6 +124,85 @@ void clear();
 ```
 
 清空 map 的键值对。注意这里不同类型的 map 相应方法的复杂度不同，请参考 [Java: Why does clear\(\) on a HashMap take O\(n\) time while clear\(\) on a TreeMap takes only O\(1\) time?](https://www.quora.com/Java-Why-does-clear-on-a-HashMap-take-O-n-time-while-clear-on-a-TreeMap-takes-only-O-1-time)
+
+#### Views
+
+##### keySet - O\(n\)
+
+```java
+Set<K> keySet();
+```
+
+返回 map 中所有键的集合 \(Set\) 的视图 \(view\)，这个视图是以 map 为基础构建的，因此当 map 发生变化时 keySet 也将发生变化。但如果在 keySet 的使用过程中，map 发生变化，keySet 的行为不确定。keySet 支持删除元素，对应的键值对也会被删除；keySet 不支持新增元素。
+
+##### values - O\(n\)
+
+```java
+Collection<V> values();
+```
+
+返回 map 中所有值的集合 \(Collection\) 的视图，剩下的说明与 keySet 相同。
+
+##### entrySet - O\(n\)
+
+```java
+Set<Map.Entry<K, V>> entrySet();
+```
+
+返回 map 中所有键值对的集合 \(Set\) 的视图，剩下的说明与 keySet 相同。
+
+##### Interface Entry:
+
+Interface entry 是 entrySet 的元素所需实现的 Interface，因此也放在 Views 中讨论：
+
+##### Entry: getKey - O\(1\)
+
+```java
+K getKey();
+```
+
+返回 entry 的键，如果 map 中对应的键值对被删除，则行为不确定。
+
+##### Entry: getValue - O\(1\)
+
+```java
+V getValue();
+```
+
+返回 entry 的值，如果 map 中对应的键值对被删除，则行为不确定。
+
+##### Entry: setValue - O\(1\)
+
+```java
+V setValue(V value);
+```
+
+将 entry 中 key 对应的值修改成 value，因为 map 是 entrySet 的基础，map 中的键值对也要相应地发生改变。如果 map 中对应的键值对被删除，则本操作行为不确定。
+
+##### Entry: equals - O\(1\)
+
+```java
+boolean equals(Object o);
+```
+
+判断两个 entry 中的 key 和 value 是否两两相等
+
+##### Entry: hashCode - O\(1\)
+
+```java
+int hashCode();
+```
+
+计算 entry 的 hashCode。specification 中指定了 hashCode 的计算方式，该方式同时保证了如果 entry1.equals\(entry2\) == true，那么 entry1.hashCode\(\) == entry2.hashCode\(\)。
+
+##### Entry: static comparingByKey - O\(1\)
+
+```java
+public static <K extends Comparable<? super K>, V> Comparator<Map.Entry<K,V>> comparingByKey() {
+    return (Comparator<Map.Entry<K, V>> & Serializable)
+        (c1, c2) -> c1.getKey().compareTo(c2.getKey());
+}
+```
 
 #### 参考：
 
