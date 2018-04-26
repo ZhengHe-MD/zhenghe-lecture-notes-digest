@@ -321,9 +321,9 @@ default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) 
         } catch(IllegalStateException ise) {
             throw new ConcurrentModificationException(ise);
         }
-        
+
         v = function.apply(k, v);
-        
+
         try {
             entry.setValue(v);
         } catch(IllegalStateException ise) {
@@ -334,6 +334,89 @@ default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) 
 ```
 
 replaceAll 依次将 entrySet 的每个 entry 的 value 用 function 转化成另一个与 value 类别兼容的值，两个 try catch 尽最大努力做到及早发现并发修改导致的错误。
+
+##### putIfAbsent - O\(1\)
+
+```java
+default V putIfAbsent(K key, V value) {
+    V v = get(key);
+    if (v == null) {
+        v = put(key, value);
+    }
+    return v;
+}
+```
+
+顾名思义
+
+* 当 key 不在 map 中时，将 key, value 插入到 map 中
+* 当 key 在 map 但对应的值为 null 时，用 value 覆盖原来的 null
+* 当 key 在 map 中且对应的值不为 null 时，不变
+
+##### remove - O\(1\)
+
+```java
+default boolean remove(Object key, Object value) {
+    Object curValue = get(key);
+    if (!Objects.equals(curValue, value) ||
+         (curValue == null && !containsKey(key)) {
+        return false;
+    }
+    remove(key);
+    return true;
+}
+```
+
+当 map 中存在 key, value 时，则把它们的 mapping 关系从 map 中删除。
+
+##### replace \(K key, V oldValue, V newValue\) - O\(1\)
+
+```java
+default boolean replace(K key, V oldValue, V newValue) {
+    Object curValue = get(key);
+    if (!Objects.equals(curValue, oldValue) ||
+        (curValue == null && !containsKey(key))) {
+        return false;
+    }
+    put(key, newValue);
+    return true;
+}
+```
+
+当 map 中存在 key, oldValue 时，则把它们的 mapping 关系改成 key, value。
+
+##### replace \(K key, V value\) - O\(1\)
+
+```java
+default V replace(K key, V value) {
+    V curValue;
+    if (((curValue = get(key)) != null) || containsKey(key)) {
+        curValue = put(key, value);
+    }
+    return curValue;
+}
+```
+
+当 map 中存在 key 时，则把 key 对应的值替换成 value
+
+##### computeIfAbsent\(K key, Function&lt;? super K, ? extends V&gt; mappingFunction\) - O\(1\)
+
+```java
+default V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+    Objects.requireNonNull(mappingFunction);
+    V v;
+    if ((v = get(key)) == null) {
+        V newValue;
+        if ((newValue = mappingFunction.apply(key)) != null) {
+            put(key, newValue);
+            return newValue;
+        }
+    }
+    return v;
+}
+```
+
+当 map 中不存在键 key 或 key 对应的值为 null，且 mappingFunction.apply\(key\) 的返回值不为 null 时，将 key 与 newValue 的 mapping 关系存入 map 中
 
 #### 参考：
 
