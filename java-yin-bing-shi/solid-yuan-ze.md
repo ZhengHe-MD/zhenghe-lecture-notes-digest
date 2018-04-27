@@ -18,7 +18,7 @@ Single Responsibility Principle 要求我们在每个实体 \(class、method、i
 
 > Objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program
 
-这条原则翻译成人话就是在代码中**子类可以完全被父类替换 \(substitution\)**。
+这条原则翻译成人话就是在代码中**父类可以完全被子类替换 \(substitution\)**。
 
 ## I - Interface Segregation Principle
 
