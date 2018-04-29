@@ -114,5 +114,51 @@ cons 的执行过程如下所示：
 
 与程序之后运行有关的数据都存储在 registers、stack 以及 global environment 中，因此只要把它们中指向的 heap cons cells，以及这些 cells 指向的其它 cells 保留，剩下的没有被引用到的 cells 就是垃圾。
 
+##### 垃圾回收法1 --- Mark/Sweep Garbage Collection
+
+Mark & Sweep 顾名思义，分为 Mark 和 Sweep 两个阶段。Mark 阶段 Garbage Collector 会顺着 registers、stack 和 global environment 出发，把所有被直接或间接引用到的 cells 都 mark 成 1；Sweep 阶段在 Mark 阶段完成后，遍历一遍被分配的 cells，把所有没有被 mark 成 1 的 cells 全部回收。接着刚才的 the-cars 和 the-cdrs 模型，我们新增一个 the-marks vector，就可以分别完成 mark 和 sweep，举例如下图所示：
+
+（图8）
+
+Mark 阶段：从 registers、stack 和 global environment 中的 c 出发，找到直接引用 4 以及间接引用 0、1，于是它们被 mark 成 1。
+
+Sweep 阶段：将没有被 mark 成 1 的 2、3 回收。
+
+Mark/Sweep 的示例代码如下：
+
+```scheme
+; Mark Phase
+(define (mark object)
+  (cond ((not (pair? object)) #f)
+        ((not (= 1 (vector-ref the-marks object)))
+         (vector-set! the-marks object 1)
+         (mark (car object))
+         (mark (cdr object)))))
+; For a pair, "object" is an integer offset denoting the cell location
+
+; Sweep Phase
+(define (sweep i)
+  (cond ((not (= i size))
+         (cond ((= 1 (vector-ref the-marks i))
+                (vector-set! the-marks i 0))
+               (else (set-cdr! (int-to-pointer i) free)
+                     (set! free (int-to-pointer i))))
+         (sweep (+ i 1)))))
+
+(define (gc)
+  (mark root)
+  (sweep 0))
+```
+
+##### 垃圾回收法2 --- Stop & Copy Garbage Collection
+
+使用 Stop & Copy 策略时，Garbage Collector 将可支配内存空间分为两半，只将一半用于分配。当用于分配的一半分配完后，同样从 registers、stack 和 global environment 出发遍历所有直接引用和间接引用的空间，将其中的信息复制到另一半未分配的空间中去，并保持它们之间的引用关系。相较于 Mark & Sweep 策略，Stop & Copy 需要两倍内存空间，但后者可以利用复制的过程来做碎片整理。
+
+#### 小结
+
+垃圾回收最早需要程序员手动完成，但由于这个过程即使是素质过硬的程序员也在所难免会出现错误，这种错误难以检查、发现，将它交给程序管理，确实是一种进步。但作为站在巨人肩上的程序员，了解一下你为什么能站在巨人的肩膀上，为什么能写着在天上飞的语言还是很有必要的。
+
+
+
 
 
