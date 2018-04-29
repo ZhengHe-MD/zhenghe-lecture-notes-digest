@@ -418,6 +418,76 @@ default V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunctio
 
 当 map 中不存在键 key 或 key 对应的值为 null，且 mappingFunction.apply\(key\) 的返回值不为 null 时，将 key 与 newValue 的 mapping 关系存入 map 中
 
+##### computeIfAbsent\(K key, BiFunction&lt;? super K, ? super V, ? extends V&gt; remappingFunction\) - O\(1\)
+
+```java
+default V computeIfAbsent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    V oldValue;
+    if ((oldValue = get(key)) != null) {
+        V newValue = remappingFunction.apply(key, oldValue);
+        if (newValue != null) {
+            put(key, newValue);
+            return newValue;
+        } else {
+            remove(key);
+            return null;
+        }
+    } else {
+        return null;
+    }
+}
+```
+
+当 map 中不存在键 key 或 key 对应的值为 null 时，计算 remappingFunction.apply\(key, oldValue\) 的结果，如果返回 null，则从 map 中删除 key, oldValue 的 mapping 关系；如果返回非 null 值 newValue，则将 key, newValue 的 mapping 关系存入 map 中。
+
+##### compute\(K key, BiFunction&lt;? super K, ? super V, ? extends V&gt; remappingFunction\) - O\(1\)
+
+```java
+default V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    V oldValue = get(key);
+    
+    V newValue = remappingFunction.apply(key, oldValue);
+    if (newValue == null) {
+        // delete mapping
+        if (oldValue != null || containsKey(key)) {
+            remove(key);
+            return null;
+        } else {
+            return null;
+        }
+    } else {
+        put(key, newValue);
+        return newValue;
+    }
+}
+```
+
+如果 newValue 是 null，则删除 key, oldValue 的 mapping 关系；否则存入 key, newValue 的 mapping 关系。
+
+##### merge\(K key, V value, BiFunction&lt;? super V, ? super V, ? extends V&gt; remappingFunction - O\(1\)
+
+```java
+default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    Objects.requireNonNull(remappingFunction);
+    Objects.requireNonNull(value);
+    
+    V oldValue = get(key);
+    V newValue = (oldValue == null) ? value :
+               remappingFunction.apply(oldValue, value);
+    
+    if (newValue == null) {
+        remove(key);
+    } else {
+        put(key, newValue);
+    } 
+    return newValue;
+}
+```
+
+这个操作常常被用来 merge 两个含有共同 key 不同 value 的 map。如果 key 尚不存在，则直接添加 mapping，否则使用 remappingFunction 对同 key 对应的不同 value 进行合理组合。
+
 #### 参考：
 
 * Effective Java \(2017\): Item 20、21、22
