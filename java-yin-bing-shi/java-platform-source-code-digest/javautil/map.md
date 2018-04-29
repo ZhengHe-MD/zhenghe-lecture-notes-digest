@@ -447,7 +447,7 @@ default V computeIfAbsent(K key, BiFunction<? super K, ? super V, ? extends V> r
 default V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
     Objects.requireNonNull(remappingFunction);
     V oldValue = get(key);
-    
+
     V newValue = remappingFunction.apply(key, oldValue);
     if (newValue == null) {
         // delete mapping
@@ -472,11 +472,11 @@ default V compute(K key, BiFunction<? super K, ? super V, ? extends V> remapping
 default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
     Objects.requireNonNull(remappingFunction);
     Objects.requireNonNull(value);
-    
+
     V oldValue = get(key);
     V newValue = (oldValue == null) ? value :
                remappingFunction.apply(oldValue, value);
-    
+
     if (newValue == null) {
         remove(key);
     } else {
@@ -488,7 +488,11 @@ default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> re
 
 这个操作常常被用来 merge 两个含有共同 key 不同 value 的 map。如果 key 尚不存在，则直接添加 mapping，否则使用 remappingFunction 对同 key 对应的不同 value 进行合理组合。
 
-#### 参考：
+#### 小结
+
+看来平时忽略了很多 Map Interface 的 default implementations...
+
+#### 参考
 
 * Effective Java \(2017\): Item 20、21、22
 * [What are the reasons why Map.get\(Object key\) is not \(fully\) generic](https://stackoverflow.com/questions/857420/what-are-the-reasons-why-map-getobject-key-is-not-fully-generic)
