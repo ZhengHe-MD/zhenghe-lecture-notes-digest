@@ -158,7 +158,9 @@ Mark/Sweep 的示例代码如下：
 
 垃圾回收最早需要程序员手动完成，但由于这个过程即使是素质过硬的程序员也在所难免会出现错误，这种错误难以检查、发现，将它交给程序管理，确实是一种进步。但作为站在巨人肩上的程序员，了解一下你为什么能站在巨人的肩膀上，为什么能写着在天上飞的语言还是很有必要的。
 
+#### 参考
 
+* [Youtube: SICP-2004-Lecture-24](https://www.youtube.com/watch?v=YA1lB8hFYUI&index=24&list=PL7BcsI5ueSNFPCEisbaoQ0kXIDX9rR5FF&t=0s)
 
 
 
