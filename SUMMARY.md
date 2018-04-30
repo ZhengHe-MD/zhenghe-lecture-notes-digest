@@ -70,6 +70,7 @@
     * [第二节：Method Area & Heap](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-er-jie-ff1a-method-area-and-heap.md)
     * [第三节：Method Table](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-san-jie-ff1a-method-table.md)
     * [第四节：Garbage Collection Introduction](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-si-jie-ff1a-garbage-collection-introduction.md)
+    * [第五节 - GC Algorithms](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-wu-jie-gc-algorithms.md)
 * Design Patterns
   * [SOLID 原则](java-yin-bing-shi/solid-yuan-ze.md)
 * [Java Platform Source Code Digest](java-yin-bing-shi/java-platform-source-code-digest.md)
