@@ -58,7 +58,5 @@ Mark and Copy 由于可以在 Mark 阶段同时进行 Copy 操作，因此能够
 * 减小 GC 时长 --- Mark and Copy
 * 碎片整理 --- Mark and Copy、Mark-Sweep-Compact
 
-本节介绍的 GC 算法是实际使用的 GC 算法的基本组件，为了权衡不同的因素，实际情况中可能将这些策略组合起来使用。
-
-
+本节介绍了基本 GC 算法，为了权衡不同因素，实际情况中可能将这些算法组合使用。
 
