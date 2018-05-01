@@ -72,7 +72,7 @@
     * [第四节：Garbage Collection Introduction](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-si-jie-ff1a-garbage-collection-introduction.md)
     * [第五节：GC Algorithms](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-wu-jie-gc-algorithms.md)
     * [第六节：GC Generational Collections](java-yin-bing-shi/a-comprehensive-introduction-to-jvm-udemy-dheeru-mundluru/di-liu-jie-ff1a-gc-generational-collections.md)
-* Design Patterns
+* [Design Patterns](java-yin-bing-shi/design-patterns.md)
   * [SOLID 原则](java-yin-bing-shi/solid-yuan-ze.md)
 * [Java Platform Source Code Digest](java-yin-bing-shi/java-platform-source-code-digest.md)
   * [java.util](java-yin-bing-shi/java-platform-source-code-digest/javautil.md)
