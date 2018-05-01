@@ -4,7 +4,7 @@
 
 ## Computer Science 基础课程
 
-* 斯坦福 - CS107 - 编程范式
+* [编程范式-Stanford-CS107-2008](computer-science-ji-chu-ke-cheng/bian-cheng-fan-5f0f-stanford-cs107.md)
   * [第二课 - 原始数据类型及互相转化](di-er-8bfe-yuan-shi-shu-ju-lei-xing-ji-hu-xiang-zhuan-hua.md)
   * [第三课 - 指鹿为马](di-san-ke-zhi-lu-wei-ma.md)
   * [第四、五课 - 泛型函数](di-si-ke-fan-xing-han-shu.md)
@@ -26,7 +26,7 @@
   * [第二十二课 - 函数式编程 - Scheme 基础 \(4\)](di-er-shi-er-ke-han-shu-shi-bian-cheng-scheme-ji-chu-4.md)
   * [第二十三课 - 函数式编程 - Scheme 基础 \(5\)](di-er-shi-san-ke-scheme-nei-cun-mo-xing.md)
   * [第二十四 - 二十六课 - Python 基础](di-er-shi-si-ke-python-ji-chu-1.md)
-* [麻省理工 - SICP](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
+* [计算机程序的构造和解释 \(SICP\)-MIT-6.001-2004](computer-science-ji-chu-ke-cheng/ma-sheng-li-gong-sicp-2004.md)
   * [第一课 - 什么是程序](computer-science-ji-chu-ke-cheng/di-yi-ke-shi-yao-shi-cheng-xu.md)
   * [第二课 - 程序抽象](computer-science-ji-chu-ke-cheng/di-er-ke-cheng-xu-chou-xiang.md)
   * [第三课 - 替代模型](computer-science-ji-chu-ke-cheng/di-san-ke-ti-dai-mo-xing.md)
@@ -49,6 +49,8 @@
   * [第二十二课 - 子程序 \(subroutine\)、栈 \(stack\) 和递归 \(recursion\)](computer-science-ji-chu-ke-cheng/di-er-shi-er-ke-zi-cheng-xu-subroutine3001-zhan-stack-he-di-gui-recursion.md)
   * [第二十三课 - Eval in register machine](computer-science-ji-chu-ke-cheng/di-er-shi-san-ke-eval-in-register-machine.md)
   * [第二十四课 - 内存管理](computer-science-ji-chu-ke-cheng/di-er-shi-si-ke-nei-cun-guan-li.md)
+* [操作系统与系统编程-Berkeley-CS162-2015](computer-science-ji-chu-ke-cheng/cao-zuo-xi-tong-yu-xi-tong-bian-7a0b-berkeley-cs162-2015.md)
+  * [第一课：CS162简介](computer-science-ji-chu-ke-cheng/cao-zuo-xi-tong-yu-xi-tong-bian-7a0b-berkeley-cs162-2015/di-yi-ke-ff1a-cs162-jian-jie.md)
 
 ## 前端杂货铺
 
