@@ -11,11 +11,11 @@
 
 ### 程序的运行过程
 
-（图1）
+![](/assets/Screen Shot 2018-05-14 at 6.28.28 AM.jpg)
 
 工程师写完程序源代码后，交由编译器去将源代码编译成可执行机器码。运行程序时，OS 将可执行机器码被载入到内存中，并为其创建 Stack 和 Heap，然后将控制权转交给该进程，为该进程提供各种虚拟服务，同时保护 OS 以及其它用户进程与之互不干扰。
 
-（图2）
+![](/assets/Screen Shot 2018-05-14 at 6.29.05 AM.jpg)
 
 进程的运行过程如上图所示，简而言之就是一个 "获取指令 - 执行指令" 的循环：
 
@@ -38,7 +38,7 @@
 
 #### 程序的地址空间 \(Program's Address Space\)
 
-（图3）
+![](/assets/Screen Shot 2018-05-14 at 6.29.42 AM.jpg)
 
 如上图所示，每个程序在运行时都拥有自己的内存地址空间，这个空间被划分为 4 个主要区域：
 
@@ -49,7 +49,7 @@
 
 当 OS 中同时存在多个正在运行的程序时，内存中就会存有多个内存寻址空间，如下图所示：
 
-（图4）
+![](/assets/Screen Shot 2018-05-14 at 6.30.15 AM.jpg)
 
 每个工程师在构建程序时，无需考虑程序运行时环境中存在的其它程序，每个程序都认为自己：
 
@@ -60,7 +60,7 @@
 
 假设系统实际上只有一个处理器，OS 如何用一个处理器抽象出多处理器的假象？最简单直观的方法就是**分时**，为每个正在运行的程序轮流分配处理器的使用时间，当一个程序的使用时间到期时，就把它的执行上下文信息储存起来，然后载入队伍中下一个正在运行的程序的执行上下文信息，继续执行，如下图所示：
 
-（图5）
+![](/assets/Screen Shot 2018-05-14 at 6.30.54 AM.jpg)
 
 这就是所谓的**并发**。但有收获必有牺牲，并发引入了系统复杂度。所有硬件都为所有程序共享，那么 OS 就需要为所有硬件创造假象，如 CPU、DRAM、I/O 设备等等。提供了假象还远远不够，如果所有运行中的程序都分享所有硬件，这意味着每个运行的程序都有机会获取、修改共享的硬件中的信息，如 DRAM，因此 OS 除了提供每个运行的程序都独占硬件的假像，还需要提供保护机制，让不同的运行程序在不破坏其它运行程序的同时独占硬件。
 
@@ -72,13 +72,13 @@
 
 以 UNIX 系统结构为例，如下图所示：
 
-（图6）
+![](/assets/Screen Shot 2018-05-14 at 6.31.40 AM.jpg)
 
 进程在执行中分为两种模式，User Mode 和 Kernel Mode，处于 Kernel Mode 的进程可以直接操作硬件，而处于 User Mode 的进程无法直接访问硬件。处于 User Mode 的进程要使用硬件服务，需要通过进入 Kernel Mode 才能完成相应的操作，通过对模式切换的控制，OS 得以保证它对用户进程的抽象不泄露。
 
 进程在两种模式之间切换存在以下几种情况：
 
-（图7）
+![](/assets/Screen Shot 2018-05-14 at 6.33.20 AM.jpg)
 
 User -&gt; Kernel
 
@@ -97,7 +97,7 @@ Kernel -&gt; User
 
 #### Simple Protection: Base and Bound \(B&B\)
 
-（图8）
+![](/assets/Screen Shot 2018-05-14 at 6.34.55 AM.jpg)
 
 在启动程序时，为其分配整块的内存空间，记录下该快空间的 Base 和 Bound，如放在特定的寄存器中，每次访问内存空间时检查地址是否在 Base 和 Bound 之间。该策略确实能够将不同的进程隔离开，但缺点是：
 
@@ -108,15 +108,28 @@ Kernel -&gt; User
 
 程序仍然认为自己拥有从 0 开始的所有内存空间，但程序的地址只是虚拟内存地址，在运行时，程序中的地址会经过 translator 被转换成实际的物理内存地址，如下图所示：
 
-（图9）
+![](/assets/Screen Shot 2018-05-14 at 6.35.22 AM.jpg)
 
 ##### Address translation with Base and Bound
 
 将 Base and Bound 策略与 translation 策略相结合，可以得到如下策略：
 
-（图10）
+![](/assets/Screen Shot 2018-05-14 at 6.35.41 AM.jpg)
 
-这样就避免了 Base and Bound 策略的第一个缺点，OS 为进程提供的假象成立。
+这样就避免了 Base and Bound 策略的第一个缺点，OS 为进程提供的假象成立。但 Address Translation with Base and Bound 的缺点就在于，在程序运行之初，OS 就要决定为 heap 和 stack 分配多大的空间，而 heap 和 stack 之间的空白区域无法精细地控制，甚至在大部分时间内这片区域没有被合理利用。
+
+##### Paging
+
+为了更精细化地控制 heap 与 stack 之间的空间，OS 可以把空间以更小的单位划分 --- page，然后在进程的虚拟内存地址与物理内存地址之间同样增加一层转换，这时 Code、Data、Stack 和 Heap 将可能占用多个 page，而这多个 page 之间并不一定要位于连续的物理内存地址上，示意图如下所示：
+
+![](/assets/Screen Shot 2018-05-14 at 6.36.18 AM.jpg)
+
+同时，我们可以将不同进程的部分区域，如 Code 区域，中的部分 page 设为共享，这在多个进程之间的保护和共享之间找到了更好的平衡。在未来的课程中会深入介绍 paging 的具体做法。
+
+#### 参考
+
+* [Lecture Note](https://inst.eecs.berkeley.edu/~cs162/sp15/static/lectures/2.pdf)
+* [Lecture Video](https://www.youtube.com/watch?v=7wM-dMTpEoI&t=4396s)
 
 
 
