@@ -128,6 +128,10 @@ Kernel -&gt; User
 
 同时，我们可以将不同进程的部分区域，如 Code 区域，中的部分 page 设为共享，这在多个进程之间的保护和共享之间找到了更好的平衡。在未来的课程中会深入介绍 paging 的具体做法。
 
+##### 举例：web server 
+
+![](/assets/Screen Shot 2018-05-16 at 12.57.31 PM.jpg)
+
 #### 参考
 
 * [Lecture Note](https://inst.eecs.berkeley.edu/~cs162/sp15/static/lectures/2.pdf)
