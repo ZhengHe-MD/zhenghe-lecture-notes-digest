@@ -45,7 +45,16 @@ while (true) {
 
 #### Safe Kernel Mode Transfers
 
+实现 user mode 到 kernel mode 的安全转变，需要许多细节来保证。
 
+* kernel 拥有自己的 kernel stack，kernel stack 与 user stack 不可以有公用的部分
+* 转变的过程必须完全可控，包括用户进程运行时环境的保存，system call 的参数移动（从 user space 到 kernel space）、参数检查以及运行结果从 kernel space 返回到 user space 的过程。
+
+转变的例子如下图所示：
+
+（图1）before
+
+（图2）after
 
 
 
