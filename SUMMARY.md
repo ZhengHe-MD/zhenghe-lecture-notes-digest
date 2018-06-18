@@ -94,6 +94,10 @@
     * [Indexes](shu-ju-ku-na-dian-shi/suo-yin.md)
       * [Compound Index](shu-ju-ku-na-dian-shi/suo-yin/compound-index.md)
 
+## 好书共读
+
+* [Seven Concurrency Models in Seven Weeks](hao-shu-gong-du/seven-concurrency-models-in-seven-weeks.md)
+
 ## 算法拾趣
 
 * [power set](suan-fa-shi-qu/power-set.md)
