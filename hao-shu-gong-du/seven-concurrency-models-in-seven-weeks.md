@@ -27,21 +27,26 @@
 #### take-aways
 
 * Intrinsic locks are convenient but limited
+
   * no way to interrupt a thread that's blocked as a result of trying to acquire an intrinsic lock
   * no way to time out while trying to acquire an intrinsic lock
   * exactly one way to acquire an intrinsic lock
 
 * ReentrantLock
+
   * Interruptible locking
   * Timeouts
   * Hand-over-Hand locking
   * Condition Variables
+
 * Atomic Variables: the foundation of non-blocking, lock-free algorithms
 
 #### self-study
 
 * ReentrantLock supports a fairness parameter. What does it mean for a lock to be "fair"? Why might you choose to use a fair lock? Why might you want?
   Fairness means all threads are fairly granted a change to execute without starvation. When several threads are waiting on one lock to be released, you want the thread waiting longer get a better chance enter critical area, you might choose to use a fair lock.
+* What is _ReentrantReadWriteLock_? How does it differ from _ReentrantLock_? When might you use it?
+  check oracle java docs for ReadWriteLock and ReentrantReadWriteLock
 
 #### references
 
@@ -49,5 +54,7 @@
 
 [Oracle Java Docs: ReentrantLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html)
 
+[Oracle Java Docs: ReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReadWriteLock.html)
 
+[Oracle Java Docs: ReentrantReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantReadWriteLock.html)
 
