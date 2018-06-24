@@ -45,27 +45,18 @@
 
 1. ReentrantLock supports a fairness parameter. What does it mean for a lock to be "fair"? Why might you choose to use a fair lock? Why might you want?
    Fairness means all threads are fairly granted a change to execute without starvation. When several threads are waiting on one lock to be released, you want the thread waiting longer get a better chance enter critical area, you might choose to use a fair lock.
+   [Starvation and Fairness](#)   
+   [Oracle Java Docs: ReentrantLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html)   
+   [Oracle Java Docs: ReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReadWriteLock.html)
+
 2. What is _ReentrantReadWriteLock_? How does it differ from _ReentrantLock_? When might you use it?
-   check oracle java docs for ReadWriteLock and ReentrantReadWriteLock
+   check oracle java docs for ReadWriteLock and ReentrantReadWriteLock [Oracle Java Docs: ReentrantReadWriteLock](#)
 3. What is a“spurious wakeup”? When can one happen and why doesn’t a well-written program care if one does
-
-#### references
-
+   [Udacity: Spurious Wake Ups](https://www.youtube.com/watch?v=yboiAqUWluE)
 
 
 
 
 
 
-
-
-
-
-[Starvation and Fairness](http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html)
-
-[Oracle Java Docs: ReentrantLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantLock.html)
-
-[Oracle Java Docs: ReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReadWriteLock.html)
-
-[Oracle Java Docs: ReentrantReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantReadWriteLock.html)
 
