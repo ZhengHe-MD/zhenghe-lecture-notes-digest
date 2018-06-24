@@ -43,12 +43,23 @@
 
 #### self-study
 
-* ReentrantLock supports a fairness parameter. What does it mean for a lock to be "fair"? Why might you choose to use a fair lock? Why might you want?
-  Fairness means all threads are fairly granted a change to execute without starvation. When several threads are waiting on one lock to be released, you want the thread waiting longer get a better chance enter critical area, you might choose to use a fair lock.
-* What is _ReentrantReadWriteLock_? How does it differ from _ReentrantLock_? When might you use it?
-  check oracle java docs for ReadWriteLock and ReentrantReadWriteLock
+1. ReentrantLock supports a fairness parameter. What does it mean for a lock to be "fair"? Why might you choose to use a fair lock? Why might you want?
+   Fairness means all threads are fairly granted a change to execute without starvation. When several threads are waiting on one lock to be released, you want the thread waiting longer get a better chance enter critical area, you might choose to use a fair lock.
+2. What is _ReentrantReadWriteLock_? How does it differ from _ReentrantLock_? When might you use it?
+   check oracle java docs for ReadWriteLock and ReentrantReadWriteLock
+3. What is a“spurious wakeup”? When can one happen and why doesn’t a well-written program care if one does
 
 #### references
+
+
+
+
+
+
+
+
+
+
 
 [Starvation and Fairness](http://tutorials.jenkov.com/java-concurrency/starvation-and-fairness.html)
 
